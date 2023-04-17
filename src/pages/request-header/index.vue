@@ -2,7 +2,8 @@
   <main class="container">
     <aside class="container__aside">
       <section class="container__aside--main">
-        <nav class="aside__list">
+        <el-empty v-if="!list.length" class="aside__list--empty" />
+        <nav v-else class="aside__list">
           <el-check-tag
             v-for="(tag, oIndex) in list"
             :key="tag.id"
@@ -208,9 +209,14 @@ onMounted(async () => {
         display: flex;
         justify-self: center;
         flex-direction: column;
+        &--empty {
+          height: 100%;
+        }
       }
       &__tag {
-        margin-top: 8px;
+        &:not(:first-of-type) {
+          margin-top: 8px;
+        }
         &--main {
           position: relative;
           padding: 8px 0;

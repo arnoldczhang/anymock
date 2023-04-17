@@ -1,27 +1,34 @@
 <template>
   <article class="container">
     <main class="container__body">
-      <section v-for="(item, index) in list" class="url__item" :key="item.key">
-        <el-input v-model="item.url">
-          <template #prepend>{{ index + 1 }}</template>
-        </el-input>
-        <el-button
-          type="danger"
-          size="small"
-          class="ml8 link--copy"
-          @click="handleDelete(index)"
+      <el-empty v-if="!list.length" class="container__body--empty" />
+      <template v-else>
+        <section
+          v-for="(item, index) in list"
+          class="url__item"
+          :key="item.key"
         >
-          删除
-        </el-button>
-        <el-button
-          type="primary"
-          size="small"
-          class="ml8 link--copy"
-          @click="handleCopy(index)"
-        >
-          复制当前
-        </el-button>
-      </section>
+          <el-input v-model="item.url">
+            <template #prepend>{{ index + 1 }}</template>
+          </el-input>
+          <el-button
+            type="danger"
+            size="small"
+            class="ml8 link--copy"
+            @click="handleDelete(index)"
+          >
+            删除
+          </el-button>
+          <el-button
+            type="primary"
+            size="small"
+            class="ml8 link--copy"
+            @click="handleCopy(index)"
+          >
+            复制当前
+          </el-button>
+        </section>
+      </template>
     </main>
     <footer class="footer">
       <el-button type="primary" @click="handleAdd">新增黑名单</el-button>
@@ -85,6 +92,9 @@ onMounted(async () => {
     height: calc(100vh - 64px);
     padding: 16px;
     overflow-y: auto;
+    &--empty {
+      height: 100%;
+    }
   }
   .sys-icon-add-box-fill {
     cursor: pointer;

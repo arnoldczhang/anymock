@@ -4,7 +4,7 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "dev": "vite",
     "clear": "rm -f dist/js/*.ts",
     "build:script": "esbuild ./public/js/script.ts ./public/js/content.ts --bundle --minify --sourcemap --format=esm --outdir=dist/js/ && pnpm clear",
