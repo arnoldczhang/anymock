@@ -1,0 +1,153 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+body, html {
+  height: 100%;
+  width: 100%;
+}
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+/* cell styles */
+.ml4 {
+  margin-left: 4px;
+}
+.ml8 {
+  margin-left: 8px;
+}
+.mt8 {
+  margin-top: 8px !important;
+}
+.mr4 {
+  margin-right: 4px;
+}
+.mr8 {
+  margin-right: 8px;
+}
+.mr16 {
+  margin-right: 16px;
+}
+.w200 {
+  width: 200px;
+}
+.w320.w320 {
+  width: 320px;
+}
+.noshrink {
+  flex-shrink: 0;
+}
+.tlr {
+  text-align: right;
+}
+.flex {
+  display: flex;
+}
+.flex-center {
+  &:extend(.flex);
+  align-items: center;
+}
+.primary {
+  color: #327dff;
+}
+.danger {
+  color: #ff4940;
+}
+.success {
+  color: #31bf30;
+}
+.omit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 无边框样式的输入框
+.input--simple {
+  border: none;
+  -webkit-appearance: none;
+  color: #999;
+  background-color: rgba(0,0,0,0);
+  border-bottom: 2px solid rgba(0,0,0,0);
+  outline: none;
+  &:focus {
+    color: #000!important;
+    border-bottom: 2px solid #ebecf0;
+  }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+// ab2.0样式的el-switch
+.switch {
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 21px;
+  height: 8px;
+  background-color: #dfe0e2;
+  border-radius: 11px;
+  transition: border-color 0.3s, background-color 0.3s;
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.08), 0px 0px 1px 0px rgba(0, 0, 0, 0.04);
+    transition: 0.4s;
+    top: -3px;
+    position: absolute;
+    left: -7px;
+  }
+  &:disabled {
+    cursor: not-allowed;
+    &::after {
+      background: #f6f7f9;
+    }
+    &:checked {
+      &::after {
+        background: #709bff;
+      }
+    }
+  }
+  &:checked {
+    background: rgba(37, 99, 244, 0.2);
+    &::after {
+      content: '';
+      position: absolute;
+      left: calc(~'100% - 7px');
+      background: #2563f3;
+      box-shadow: 0px 1px 4px 0px rgba(37, 99, 244, 0.36);
+      top: -3px;
+    }
+  }
+}
+
+.sys-icon-drag {
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+}

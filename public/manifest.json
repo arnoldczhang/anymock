@@ -1,0 +1,37 @@
+{
+  "name": "AnyMock",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "mock mock",
+  "permissions": [
+    "storage",
+    "cookies",
+    "clipboardRead",
+    "clipboardWrite",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "options_page": "options.html",
+  "devtools_page": "devtools.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": ["js/script.js"],
+    "matches": ["<all_urls>"]
+  }]
+}
