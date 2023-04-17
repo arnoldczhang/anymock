@@ -28,21 +28,27 @@
                     ...还有{{ tag.params.length - 1 }} 条配置
                   </p>
                 </section>
-                <c-icon
-                  icon="Delete"
-                  :size="36"
-                  color="#F56C6C"
-                  class="btn--delete"
-                  @click.stop="handleDeleteOne(oIndex)"
-                />
+                <el-tooltip content="删除">
+                  <c-icon
+                    icon="Delete"
+                    :size="36"
+                    color="#F56C6C"
+                    class="btn--delete"
+                    @click.stop="handleDeleteOne(oIndex)"
+                  />
+                </el-tooltip>
               </article>
             </template>
           </el-check-tag>
         </nav>
       </section>
       <footer class="container__aside--bottom">
-        <el-button type="primary" @click="handleAdd">+新增配置</el-button>
-        <el-button type="danger" @click="handleDeleteAll">清空配置</el-button>
+        <el-button type="primary" size="small" @click="handleAdd">
+          +新增配置
+        </el-button>
+        <el-button type="danger" size="small" @click="handleDeleteAll">
+          清空配置
+        </el-button>
       </footer>
     </aside>
     <article class="container__body">
@@ -55,10 +61,16 @@
             @confirm="handleUpdateName"
           />
           <span>
-            <el-button type="primary" @click="handleAddHeaderParam">
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleAddHeaderParam"
+            >
               +新增头字段
             </el-button>
-            <el-button type="success" @click="handleSave">保存</el-button>
+            <el-button type="success" size="small" @click="handleSave">
+              保存
+            </el-button>
           </span>
         </header>
         <section class="container__body--main">

@@ -55,21 +55,21 @@
       >
         清空所有mock
       </el-button>
-      <el-button
+      <!-- <el-button
         class="btn"
         type="danger"
         size="small"
         @click="handleClearStorage"
       >
         清空storage(仅用于调试)
-      </el-button>
+      </el-button> -->
       <el-button
         class="btn mr8"
         type="primary"
         size="small"
         @click="handleAddMock"
       >
-        新增mock
+        +新增mock
       </el-button>
     </p>
   </article>

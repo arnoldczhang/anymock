@@ -16,23 +16,30 @@
           />
         </el-select>
       </span>
-      <el-button type="primary" size="small" @click="openEditGroupNameDialog">
-        添加分组
-      </el-button>
-      <el-button type="primary" size="small" @click="openModifyGroupNameDialog">
-        修改分组名称
-      </el-button>
-      <el-button
-        v-if="mockGroupList.length > 1"
-        type="danger"
+      <el-dropdown
+        split-button
         size="small"
-        @click="removeMockGroup"
+        type="primary"
+        @click="openEditGroupNameDialog"
       >
-        删除当前分组
-      </el-button>
-      <el-button type="primary" size="small" @click="copyGroup">
-        复制分组
-      </el-button>
+        +添加分组
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="openModifyGroupNameDialog">
+              <el-link type="success" :underline="false">修改</el-link>
+            </el-dropdown-item>
+            <el-dropdown-item
+              v-if="mockGroupList.length > 1"
+              @click="removeMockGroup"
+            >
+              <el-link type="danger" :underline="false">删除</el-link>
+            </el-dropdown-item>
+            <el-dropdown-item @click="copyGroup">
+              <el-link type="primary" :underline="false">拷贝</el-link>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
     <mock-table :groupId="currentMockGroup?.id" />
   </div>

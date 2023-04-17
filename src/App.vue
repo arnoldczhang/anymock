@@ -60,10 +60,8 @@
   </main>
 </template>
 <script setup lang="ts">
-import * as Mock from 'mockjs';
 import { DocumentCopy, Refresh } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
-import { sendMessageToContentScript } from '@/utils/message';
 import { setStorage, getCurrentStorage } from '@/utils/storage';
 import { copy } from '@/utils/index';
 import useCommonStore from '@/store/common';
@@ -74,6 +72,7 @@ import {
   CURRENT_GROUP_ID_KEY,
   MOCK_GROUP_KEY,
   MOCK_INTERFACE_KEY,
+  REQ_HEADER_KEY,
 } from './const/storageKey';
 
 const store = useCommonStore();
@@ -137,6 +136,7 @@ const handlePasteAllStorage = async (jsonStr: string) => {
       [MOCK_INTERFACE_KEY]: table = [],
       [CURRENT_GROUP_ID_KEY]: currentGroupId = '',
       [BLACKLIST_KEY]: blacklist = [],
+      [REQ_HEADER_KEY]: reqHeader = [],
     } = JSON.parse(jsonStr);
 
     if (Array.isArray(mockGroup)) {
@@ -155,11 +155,15 @@ const handlePasteAllStorage = async (jsonStr: string) => {
       await setStorage(BLACKLIST_KEY, blacklist);
     }
 
+    if (Array.isArray(reqHeader)) {
+      await setStorage(REQ_HEADER_KEY, reqHeader);
+    }
+
     Message({
       type: 'success',
       message: '同步成功',
     });
-    nextTick(() => router.go(0));
+    setTimeout(() => router.go(0), 1000);
   } catch (err: any) {
     Message({
       type: 'error',
@@ -183,7 +187,6 @@ onMounted(() => {
   store.updateReqHeader();
 });
 syncUserInfo();
-// sendMessageToContentScript({ type: 'mock-fn', data: Mock.mock });
 </script>
 <style scoped lang="less">
 .container {
