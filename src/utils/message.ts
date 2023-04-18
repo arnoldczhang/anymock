@@ -19,9 +19,9 @@ export const sendMessageToContentScript = (
   chrome.tabs.query(
     {
       active: true,
-      currentWindow: true,
     },
     function (tabs) {
+      // 暂时就取第一个tab，兼容开发者工具独立窗口的场景
       tabId = tabs[0]?.id as number;
       chrome.tabs.sendMessage(tabId, message, function (response) {
         if (callback) callback(response);

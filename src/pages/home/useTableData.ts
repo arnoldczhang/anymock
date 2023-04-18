@@ -1,8 +1,9 @@
-import { MockItem } from '@/types/mock';
+import { MockItem, Tag } from '@/types/mock';
 import { genMockInterface } from '@/utils';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
 import { ComputedRef } from 'vue';
 import { api } from '@/service';
+import { STATUS } from '@/const';
 
 export const useTableData = (groupId: ComputedRef<string>) => {
   // 当前使用的接口列表
@@ -19,6 +20,17 @@ export const useTableData = (groupId: ComputedRef<string>) => {
   const handleAddMock = async () => {
     const defaultInterface = genMockInterface(groupId.value);
     tableData.value.push(defaultInterface);
+    await handleSave();
+  };
+
+  const handleStateChange = async (data: MockItem) => {
+    const allDisabled =
+      data.tags.length &&
+      data.tags.every((tag: Tag) => tag.status === STATUS.disable);
+
+    if (allDisabled) {
+      data.tags[0].status = STATUS.enable;
+    }
     await handleSave();
   };
 
@@ -65,6 +77,7 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     search,
     tableData,
     searchTableData,
+    handleStateChange,
     handleAddMock,
     handleDeleteMock,
     handleDeleteAllMock,

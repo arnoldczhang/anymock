@@ -316,10 +316,7 @@ export const parseResponse = (
  *
  * @param json
  */
-export const transJson2Tree = (
-  json: Json,
-  result: Tree[] = []
-): Tree[] => {
+export const transJson2Tree = (json: Json, result: Tree[] = []): Tree[] => {
   const array = Array.isArray(json);
   return Object.entries(json).reduce((res: Tree[], [key, value]) => {
     const node = genDefaultTreeData();
@@ -343,10 +340,7 @@ export const transJson2Tree = (
  * @param tree
  * @returns
  */
-export const transTree2Json = (
-  tree: Tree[] = [],
-  result: Json = {}
-): Json => {
+export const transTree2Json = (tree: Tree[] = [], result: Json = {}): Json => {
   // 基本类型
   if (!tree.length) return result;
   // 判定当前结构是数组（见 transJson2Tree 对 label 的解释）

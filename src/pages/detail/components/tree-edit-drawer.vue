@@ -124,8 +124,7 @@ const isNumber = (value: unknown) => value === 'number' || value === 'bigint';
 
 const getDataValue = ({ value, children = [] }: TreeNode) => {
   const { length } = children;
-  const array =
-    length && children.every((node: TreeNode) => isNum(node.label));
+  const array = length && children.every((node: TreeNode) => isNum(node.label));
 
   if (Array.isArray(value) || array) {
     return '[…]';

@@ -38,7 +38,7 @@ export const mockSelection = [
   ...Object.entries(mockKeyMap).map(([value, label]) => ({
     value,
     label,
-  }))
+  })),
 ];
 
 export const mockLengthSelection = [
@@ -74,7 +74,7 @@ export const mockFn = [
   { name: '时间', mock: '@time()' },
   { name: '日期时间', mock: '@datetime()' },
   { name: '图片连接', mock: '@image()' },
-  { name: '图片data', mock: "@imageData()" },
+  { name: '图片data', mock: '@imageData()' },
   { name: '颜色', mock: '@color()' },
   { name: '颜色hex', mock: '@hex()' },
   { name: '颜色rgba', mock: '@rgba()' },
@@ -107,7 +107,7 @@ export const mockFn = [
   { name: '协议', mock: '@protocol()' },
 ];
 
-export const mockFnSelection = mockFn.map(({ name, mock}) => ({
+export const mockFnSelection = mockFn.map(({ name, mock }) => ({
   value: mock,
   label: mock,
   description: name,

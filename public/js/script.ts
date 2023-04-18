@@ -1,4 +1,5 @@
 /* eslint-disable */
+import xhook from "xhook";
 import { parseResponse } from '../../src/utils/mock';
 import CODE from '../../src/const/code';
 import EVENT from '../../src/const/event';
@@ -244,9 +245,21 @@ const proxyXMLHttpRequest = () => {
   });
 };
 
+const initXhook = () => {
+  // xhook.before((request, callback) => {
+  //   console.log(request);
+  //   callback();
+  // });
+  xhook.after((request, response) => {
+    console.log(request);
+    console.log(response);
+  });
+};
+
 const init = () => {
   initListener();
   proxyXMLHttpRequest();
+  // initXhook();
 };
 
 init();

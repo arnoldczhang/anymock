@@ -1,6 +1,6 @@
-import { ElMessage as Message } from "element-plus";
-import { api } from "@/service";
-import { genMockInterface } from "@/utils";
+import { ElMessage as Message } from 'element-plus';
+import { api } from '@/service';
+import { genMockInterface } from '@/utils';
 
 export const useMockItemData = () => {
   const mockItem = ref(genMockInterface());
@@ -22,6 +22,6 @@ export const useMockItemData = () => {
   return {
     mockItem,
     getMockItem,
-    handleSave
+    handleSave,
   };
 };

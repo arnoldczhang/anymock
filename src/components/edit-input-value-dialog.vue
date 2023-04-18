@@ -1,8 +1,23 @@
 <template>
-  <el-dialog width="540px" :model-value="revealed" :before-close="dialog.cancel" :title="title">
-    <el-form :model="form" :rules="rules" ref="formRef" label-width="auto" @submit.prevent>
+  <el-dialog
+    width="540px"
+    :model-value="revealed"
+    :before-close="dialog.cancel"
+    :title="title"
+  >
+    <el-form
+      :model="form"
+      :rules="rules"
+      ref="formRef"
+      label-width="auto"
+      @submit.prevent
+    >
       <el-form-item :label="`${label}：`" prop="value">
-        <el-input v-model="form.value" placeholder="请输入" :maxlength="maxlength"></el-input>
+        <el-input
+          v-model="form.value"
+          placeholder="请输入"
+          :maxlength="maxlength"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -27,8 +42,8 @@ const props = withDefaults(
   }>(),
   {
     maxlength: 100,
-    defaultValue: ''
-  },
+    defaultValue: '',
+  }
 );
 
 // 表单

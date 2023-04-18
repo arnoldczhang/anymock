@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column prop="status" label="状态">
         <template #default="{ row }">
-          <el-switch v-model="row.status" @change="handleSave" />
+          <el-switch v-model="row.status" @change="handleStateChange(row)" />
         </template>
       </el-table-column>
       <el-table-column prop="operation" label="操作">
@@ -105,6 +105,7 @@ const {
   getTableData,
   searchTableData,
   handleAddMock,
+  handleStateChange,
   handleDeleteMock,
   handleDeleteAllMock,
   handleSave,
