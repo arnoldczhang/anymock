@@ -52,7 +52,7 @@
                       type="danger"
                       :underline="false"
                       class="link link--danger mr16"
-                      icon="sys-icon-close"
+                      icon="Delete"
                       @click.stop="handleDeleteNode(node)"
                     >
                       删除
@@ -61,7 +61,7 @@
                       type="success"
                       :underline="false"
                       class="link link--success"
-                      icon="sys-icon-copy"
+                      icon="CopyDocument"
                       @click.stop="handleCopyNode(node, data)"
                     >
                       克隆
@@ -72,7 +72,7 @@
             </el-tree>
           </el-tab-pane>
           <el-tab-pane label="纯json编辑" :name="TAB.json">
-            <textarea v-model="jsonstr" class="textarea" />
+            <JsonEditor v-model="jsonstr" />
           </el-tab-pane>
         </el-tabs>
       </section>
@@ -214,7 +214,7 @@ defineExpose({ handleOpen, handleClose });
         }
         .node__value {
           color: #999;
-          max-width: 320px;
+          max-width: 640px;
         }
       }
       &--right {

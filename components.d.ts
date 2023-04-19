@@ -48,6 +48,7 @@ declare module '@vue/runtime-core' {
     ElTree: typeof import('element-plus/es')['ElTree']
     Icon: typeof import('./src/components/icon.vue')['default']
     InputView: typeof import('./src/components/input-view.vue')['default']
+    JsonEditor: typeof import('./src/components/json-editor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

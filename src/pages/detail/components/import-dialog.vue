@@ -12,13 +12,7 @@
       </footer>
     </template>
     <article>
-      <el-input
-        type="textarea"
-        :rows="10"
-        placeholder="请输入内容"
-        resize="none"
-        v-model="json"
-      />
+      <JsonEditor v-model="json" :style="{ maxHeight: '480px' }" />
     </article>
   </el-dialog>
 </template>
