@@ -9,6 +9,7 @@
               class="header--name__input"
               placeholder="可搜索接口名"
               :prefix-icon="Search"
+              size="small"
               v-model="search"
             />
           </header>
