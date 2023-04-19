@@ -143,15 +143,15 @@
                     <el-link
                       type="success"
                       :underline="false"
-                      class="link--delete"
+                      class="link--hover"
                       @click.stop="handleInsertAfterNode(data, node, index)"
                     >
-                      新增
+                      同级新增
                     </el-link>
                     <el-link
                       type="primary"
                       :underline="false"
-                      class="ml8"
+                      class="link--hover ml8"
                       @click.stop="handleEditNode(data, node)"
                     >
                       编辑
@@ -546,11 +546,11 @@ const goBack = () => {
     display: flex;
     justify-content: space-between;
     flex: 1;
-    .link--delete {
+    .link--hover {
       display: none;
     }
     &:hover {
-      & .link--delete {
+      & .link--hover {
         display: inline-block;
       }
     }

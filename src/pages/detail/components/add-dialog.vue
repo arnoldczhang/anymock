@@ -133,6 +133,14 @@
               </span>
             </template>
           </el-autocomplete>
+          <el-link
+            :underline="false"
+            target="_blank"
+            class="ml8"
+            href="http://mockjs.com"
+          >
+            <c-icon icon="QuestionFilled" />
+          </el-link>
         </el-form-item>
         <el-form-item v-else-if="field" prop="字段" label="字段：">
           <el-input
