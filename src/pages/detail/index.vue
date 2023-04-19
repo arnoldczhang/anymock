@@ -1,167 +1,166 @@
 <template>
   <el-col>
-    <el-page-header @back="goBack" title="返回接口列表" class="back-header" />
+    <el-page-header @back="goBack" title="返回接口列表" class="back-header">
+      <template #content>
+        <input-view
+          label="接口："
+          :text="`接口：${mockItem.name || '--'}`"
+          class="card__title--left"
+          :model="mockItem.name"
+          @confirm="(val: string) => handleUpdateMockName(mockItem, val)"
+        />
+      </template>
+      <template #extra>
+        <span class="card__title--right flex-center">
+          <el-button
+            type="success"
+            size="small"
+            @click="handleOpenImportCaseDialog"
+          >
+            导入案例
+          </el-button>
+          <el-button type="primary" size="small" @click="handleSave">
+            保存
+          </el-button>
+          <el-tooltip content="不做任何mock处理，仅返回原始数据">
+            <el-checkbox
+              class="ml8"
+              v-model="mockItem.onlyProxy"
+              @change="handleSave"
+            >
+              透传原始json
+            </el-checkbox>
+          </el-tooltip>
+          <el-switch
+            class="ml8"
+            v-model="mockItem.status"
+            @change="handleStatusChange"
+          />
+        </span>
+      </template>
+    </el-page-header>
     <article class="mock__item">
-      <el-card class="card">
+      <el-card
+        :class="{
+          card: true,
+          hidden: !mockItem.status,
+        }"
+        v-for="(tag, index) in mockItem.tags"
+        :key="tag.id"
+      >
         <template #header>
           <header class="card__header">
             <input-view
-              label="接口："
-              :text="`接口：${mockItem.name || '--'}`"
+              label="案例："
+              :text="`案例：${tag.name || '--'}`"
               class="card__title--left"
-              :model="mockItem.name"
-              @confirm="(val: string) => handleUpdateMockName(mockItem, val)"
+              :model="tag.name"
+              @confirm="(val: string) => handleUpdateTagName(tag, val)"
             />
-            <span class="card__title--right flex-center">
+            <span class="card__title--right">
+              <!-- <el-link :underline="false" @click="handleLog(index)">样例log</el-link> -->
               <el-button
-                type="success"
-                size="small"
-                @click="handleOpenImportCaseDialog"
-              >
-                导入案例
-              </el-button>
-              <el-button type="primary" size="small" @click="handleSave">
-                保存
-              </el-button>
-              <el-tooltip content="不做任何mock处理，仅返回原始数据">
-                <el-checkbox
-                  class="ml8"
-                  v-model="mockItem.onlyProxy"
-                  @change="handleSave"
-                >
-                  透传原始json
-                </el-checkbox>
-              </el-tooltip>
-              <el-switch
                 class="ml8"
-                v-model="mockItem.status"
-                @change="handleStatusChange"
+                size="small"
+                @click="handleOpenJSONEditDrawer(index)"
+              >
+                编辑原始json
+              </el-button>
+              <el-button
+                class="ml8"
+                size="small"
+                @click="handleOpenImportDialog(index)"
+              >
+                导入原始json
+              </el-button>
+              <el-button
+                class="ml8"
+                size="small"
+                @click="handleShareCase(index)"
+              >
+                导出案例
+              </el-button>
+              <el-button
+                class="ml8"
+                size="small"
+                @click="handleCopyCase(index)"
+              >
+                拷贝案例
+              </el-button>
+              <el-button
+                :disabled="mockItem.tags.length <= 1"
+                class="ml8"
+                type="danger"
+                size="small"
+                @click="handleDeleteCase(index)"
+              >
+                删除
+              </el-button>
+              <el-switch
+                v-model="tag.status"
+                class="ml8"
+                @change="(status: string | number | boolean) => handleTagStatusChange(tag, status)"
               />
             </span>
           </header>
         </template>
-        <el-card
-          :class="{
-            card: true,
-            hidden: !mockItem.status,
-          }"
-          v-for="(tag, index) in mockItem.tags"
-          :key="tag.id"
-        >
-          <template #header>
-            <header class="card__header">
-              <input-view
-                label="案例："
-                :text="`案例：${tag.name || '--'}`"
-                class="card__title--left"
-                :model="tag.name"
-                @confirm="(val: string) => handleUpdateTagName(tag, val)"
-              />
-              <span class="card__title--right">
-                <!-- <el-link :underline="false" @click="handleLog(index)">样例log</el-link> -->
-                <el-button
-                  class="ml8"
-                  size="small"
-                  @click="handleOpenJSONEditDrawer(index)"
-                >
-                  编辑原始json
-                </el-button>
-                <el-button
-                  class="ml8"
-                  size="small"
-                  @click="handleOpenImportDialog(index)"
-                >
-                  导入原始json
-                </el-button>
-                <el-button
-                  class="ml8"
-                  size="small"
-                  @click="handleShareCase(index)"
-                >
-                  导出案例
-                </el-button>
-                <el-button
-                  class="ml8"
-                  size="small"
-                  @click="handleCopyCase(index)"
-                >
-                  拷贝案例
-                </el-button>
-                <el-button
-                  :disabled="mockItem.tags.length <= 1"
-                  class="ml8"
-                  type="danger"
-                  size="small"
-                  @click="handleDeleteCase(index)"
-                >
-                  删除
-                </el-button>
-                <el-switch
-                  v-model="tag.status"
-                  class="ml8"
-                  @change="(status: string | number | boolean) => handleTagStatusChange(tag, status)"
-                />
-              </span>
-            </header>
-          </template>
-          <section>
-            <el-tree ref="treeRef" :data="tag.data" node-key="id">
-              <template #default="{ node, data }">
-                <section class="tree__node">
-                  <span class="tree__node--left">
-                    <label class="node__label">
-                      {{ node.label == null ? '0' : node.label }}
+        <section>
+          <el-tree ref="treeRef" :data="tag.data" node-key="id">
+            <template #default="{ node, data }">
+              <section class="tree__node">
+                <span class="tree__node--left">
+                  <label class="node__label">
+                    {{ node.label == null ? '0' : node.label }}
+                  </label>
+                  ：
+                  <label class="node__value omit">
+                    {{ parseNodeValue(data) }}
+                  </label>
+                  <!-- 高亮值的mock -->
+                  <template v-if="data.mock">
+                    <c-icon
+                      icon="DArrowRight"
+                      :size="12"
+                      color="#409EFF"
+                      class="ml4 mr4"
+                    />
+                    <label class="danger">{{ getMockText(data.mock) }}</label>
+                  </template>
+                  <!-- 高亮长度的mock -->
+                  <template v-else-if="data.lengthMock && data.lengthMock[0]">
+                    <c-icon
+                      icon="DArrowRight"
+                      :size="12"
+                      color="#409EFF"
+                      class="ml4 mr4"
+                    />
+                    <label class="danger">
+                      {{ getLengthMockText(data.lengthMock[1]) }}
                     </label>
-                    ：
-                    <label class="node__value omit">
-                      {{ parseNodeValue(data) }}
-                    </label>
-                    <!-- 高亮值的mock -->
-                    <template v-if="data.mock">
-                      <c-icon
-                        icon="DArrowRight"
-                        :size="12"
-                        color="#409EFF"
-                        class="ml4 mr4"
-                      />
-                      <label class="danger">{{ getMockText(data.mock) }}</label>
-                    </template>
-                    <!-- 高亮长度的mock -->
-                    <template v-else-if="data.lengthMock && data.lengthMock[0]">
-                      <c-icon
-                        icon="DArrowRight"
-                        :size="12"
-                        color="#409EFF"
-                        class="ml4 mr4"
-                      />
-                      <label class="danger">
-                        {{ getLengthMockText(data.lengthMock[1]) }}
-                      </label>
-                    </template>
-                  </span>
-                  <span class="tree__node--right">
-                    <el-link
-                      type="success"
-                      :underline="false"
-                      class="link--hover"
-                      @click.stop="handleInsertAfterNode(data, node, index)"
-                    >
-                      同级新增
-                    </el-link>
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      class="link--hover ml8"
-                      @click.stop="handleEditNode(data, node)"
-                    >
-                      编辑
-                    </el-link>
-                  </span>
-                </section>
-              </template>
-            </el-tree>
-          </section>
-        </el-card>
+                  </template>
+                </span>
+                <span class="tree__node--right">
+                  <el-link
+                    type="success"
+                    :underline="false"
+                    class="link--hover"
+                    @click.stop="handleInsertAfterNode(data, node, index)"
+                  >
+                    同级新增
+                  </el-link>
+                  <el-link
+                    type="primary"
+                    :underline="false"
+                    class="link--hover ml8"
+                    @click.stop="handleEditNode(data, node)"
+                  >
+                    编辑
+                  </el-link>
+                </span>
+              </section>
+            </template>
+          </el-tree>
+        </section>
       </el-card>
       <import-dialog
         ref="importCaseDialogRef"
@@ -538,6 +537,7 @@ const goBack = () => {
       &--left {
         display: inline-block;
         flex-shrink: 0;
+        font-size: 14px;
       }
     }
   }

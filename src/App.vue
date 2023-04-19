@@ -198,7 +198,7 @@ syncUserInfo();
     max-width: 200px;
     flex-shrink: 0;
     box-sizing: border-box;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #e9e9eb;
     display: flex;
     flex-direction: column;
     &--top {
@@ -207,7 +207,8 @@ syncUserInfo();
       align-items: center;
       font-size: 12px;
       flex-shrink: 0;
-      height: 40px;
+      height: 50px;
+      box-sizing: border-box;
       padding: 0 16px;
     }
     &--center {

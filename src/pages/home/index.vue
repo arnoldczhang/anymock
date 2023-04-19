@@ -1,6 +1,6 @@
 <template>
-  <div class="container__body">
-    <div class="container__body__header">
+  <main class="container__body">
+    <header class="container__body__header">
       <span class="mock-group">
         接口分组：
         <el-select
@@ -40,9 +40,9 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-    </div>
+    </header>
     <mock-table :groupId="currentMockGroup?.id" />
-  </div>
+  </main>
   <edit-input-value-dialog
     title="添加接口分组"
     label="接口分组名称"
@@ -116,7 +116,9 @@ useTabActiveListener(init);
     flex-direction: column;
     width: calc(100vw - 200px);
     &__header {
+      box-sizing: border-box;
       padding: 12px;
+      height: 50px;
       .mock-group {
         font-size: 14px;
         margin-right: 12px;
