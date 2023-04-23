@@ -67,6 +67,9 @@ const notify = (message = '', option = {}) => {
   }
 };
 
+/**
+ *
+ */
 const freshData = () => {
   try {
     chrome.storage.local.get(
@@ -113,6 +116,9 @@ const freshData = () => {
   }
 };
 
+/**
+ *
+ */
 const watchVisibility = () => {
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
@@ -121,19 +127,9 @@ const watchVisibility = () => {
   });
 };
 
-const appendScript = () => {
-  const script = document.createElement('script');
-  script.src = chrome.runtime.getURL('js/script.js');
-  (document.head || document.documentElement).appendChild(script);
-
-  script.onload = function () {
-    (this as HTMLScriptElement).remove();
-    // 植入脚本后，立刻获取mock数据
-    freshData();
-    watchVisibility();
-  };
-};
-
+/**
+ *
+ */
 const initListener = () => {
   // 【通信】接收extension发来的通知更新
   runtime.listen(({ type }) => {
@@ -150,5 +146,37 @@ const initListener = () => {
   });
 };
 
-appendScript();
-initListener();
+/**
+ *
+ */
+const appendScript = () => {
+  const script = document.createElement('script');
+  script.src = chrome.runtime.getURL('js/script.js');
+  (document.head || document.documentElement).appendChild(script);
+
+  script.onload = function () {
+    (this as HTMLScriptElement).remove();
+    // 植入脚本后，立刻获取mock数据
+    freshData();
+    watchVisibility();
+    initListener();
+  };
+};
+
+/**
+ *
+ */
+const checkIfAppendScript = () => {
+  chrome.storage.local.get([BLACKLIST_KEY], (data) => {
+    const { blacklist } = data;
+    const { href } = location;
+    if (!Array.isArray(blacklist) || !blacklist.length) return appendScript();
+    const inBlacklist = blacklist.some(
+      ({ url }) => href === url || href.indexOf(url) > -1
+    );
+    if (inBlacklist) return;
+    appendScript();
+  });
+};
+
+checkIfAppendScript();

@@ -18,7 +18,7 @@ export default defineConfig({
       eslintrc: {
         enabled: true,
       },
-      imports: ['vue', 'vue-router'],
+      imports: ['vue', 'vue-router', 'pinia'],
       dts: './auto-imports.d.ts',
     }),
     Components({

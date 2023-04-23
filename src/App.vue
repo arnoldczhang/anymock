@@ -7,6 +7,9 @@
       </section>
       <el-menu
         v-if="menuVisible"
+        text-color="rgb(126, 129, 142)"
+        active-text-color="#ffd04b"
+        background-color="rgb(36,39,50)"
         class="container__aside--center"
         :style="{ width: collapse ? '64px' : '199px' }"
         :default-active="pageName"
@@ -178,6 +181,11 @@ const handlePasteAllStorage = async (jsonStr: string) => {
 
 const syncUserInfo = async () => {
   // TODO 登录账号
+  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=827');
+  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=829');
+  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=809');
+  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=810');
+  fetch('https://mdhweekly.com/weekly/issue-0092.json');
 };
 
 const listenLogs = () => {
@@ -215,6 +223,8 @@ syncUserInfo();
     border-right: 1px solid @border;
     display: flex;
     flex-direction: column;
+    background-color: rgb(36, 39, 50);
+    color: #fff;
     &--top {
       cursor: pointer;
       display: flex;
@@ -223,7 +233,7 @@ syncUserInfo();
       flex-shrink: 0;
       height: 50px;
       box-sizing: border-box;
-      padding: 0 16px;
+      padding: 0 21px;
     }
     &--center {
       flex: 1;
@@ -232,6 +242,10 @@ syncUserInfo();
     &--bottom {
       display: flex;
       justify-content: center;
+      height: 40px;
+      :deep(.el-link) {
+        color: #fff;
+      }
     }
     .aside__link {
       display: block;
@@ -242,6 +256,9 @@ syncUserInfo();
   &__content {
     flex: 1;
     overflow: hidden;
+    padding: 16px;
+    box-sizing: border-box;
+    background-color: rgb(239, 241, 245);
   }
 }
 </style>

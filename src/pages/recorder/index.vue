@@ -13,27 +13,45 @@
       </template>
     </main>
     <footer class="footer">
-      <el-button type="success" size="small" class="mr8" @click="handleRecord">
-        开始录制
+      <el-button
+        :type="loading ? 'success' : 'warning'"
+        :loading="loading"
+        size="small"
+        class="mr8"
+        @click="handleRecord"
+      >
+        {{ loading ? '录制中' : '开始录制' }}
       </el-button>
     </footer>
   </article>
 </template>
 <script setup lang="ts">
 import { ElMessage as Message } from 'element-plus';
-import { Ref } from 'vue';
 import useLogStore from '@/store/log';
 import { Url } from '@/types/mock.d';
 import { getStorage, setStorage } from '@/utils/storage';
 import { reloadCurrentTab } from '@/utils/message';
 
+let timeout: any = null;
 const store = useLogStore();
-const list = computed(() => store.logs);
+const { logs } = storeToRefs(store);
+const loading = ref(false);
+const list = computed(() => logs.value);
 
 const handleRecord = async () => {
   store.clear();
   reloadCurrentTab();
 };
+
+const setLoading = () => {
+  if (timeout) {
+    clearTimeout(timeout);
+  }
+  loading.value = true;
+  timeout = setTimeout(() => (loading.value = false), 1000);
+};
+
+watch(() => list.value, setLoading, { deep: true });
 </script>
 <style scoped lang="less">
 .container {
@@ -42,9 +60,11 @@ const handleRecord = async () => {
   display: flex;
   flex-direction: column;
   &__body {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 86px);
     padding: 16px;
     overflow-y: auto;
+    margin-bottom: 8px;
+    &:extend(.border-box);
     &--empty {
       height: 100%;
     }
@@ -66,6 +86,7 @@ const handleRecord = async () => {
     display: flex;
     justify-content: end;
     padding: 10px 0;
+    &:extend(.border-box);
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <article class="table">
     <el-table :data="searchTableData" v-bind="tableProps">
       <el-table-column prop="name" label="接口" show-overflow-tooltip>
         <template #header>
@@ -15,7 +15,7 @@
           </header>
         </template>
       </el-table-column>
-      <el-table-column prop="delay" label="请求延时" show-overflow-tooltip>
+      <el-table-column prop="delay" label="请求延时" width="420">
         <template #default="{ row }">
           <el-radio-group v-model="row.delay" @change="handleSave">
             <el-radio :label="false">关闭</el-radio>
@@ -96,7 +96,9 @@ const router = useRouter();
 const tableProps = computed(
   () =>
     ({
-      height: 'calc(100vh - 95px)',
+      'header-row-class-name': 'table__header',
+      height: 'calc(100vh - 143px)',
+      class: 'border-box',
       size: 'small',
     } as any)
 );
@@ -129,8 +131,11 @@ const handleClearStorage = async () => {
 };
 </script>
 <style scoped lang="less">
-article {
+.table {
   flex: 1;
+  :deep(.table__header) {
+    height: 48px;
+  }
 }
 .header--name {
   display: flex;
@@ -148,8 +153,10 @@ article {
   }
 }
 .footer {
+  margin-top: 8px;
   display: flex;
   justify-content: end;
   padding: 10px 0;
+  &:extend(.border-box);
 }
 </style>

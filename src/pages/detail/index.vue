@@ -509,11 +509,14 @@ const goBack = () => {
 <style scoped lang="less">
 .back-header {
   padding: 12px;
+  &:extend(.border-box);
+  margin-bottom: 8px;
 }
 .mock__item {
   width: 100%;
   overflow-y: auto;
-  height: calc(100vh - 54px);
+  height: calc(100vh - 94px);
+  &:extend(.border-box);
   box-sizing: border-box;
   padding: 16px;
 

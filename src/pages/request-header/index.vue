@@ -189,6 +189,7 @@ onMounted(async () => {
 </script>
 <style lang="less" scoped>
 .container {
+  &:extend(.border-box);
   &__aside {
     display: flex;
     flex-direction: column;

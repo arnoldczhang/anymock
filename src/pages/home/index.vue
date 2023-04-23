@@ -114,11 +114,13 @@ useTabActiveListener(init);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    width: calc(100vw - 200px);
+    width: calc(100vw - 232px);
     &__header {
       box-sizing: border-box;
       padding: 12px;
       height: 50px;
+      margin-bottom: 8px;
+      &:extend(.border-box);
       .mock-group {
         font-size: 14px;
         margin-right: 12px;

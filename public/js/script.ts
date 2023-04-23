@@ -112,12 +112,12 @@ const proxyRequestHeader = (
  * @param response
  */
 const proxyResponseHeader = (response) => {
-  const { headers } = response;
-  const extraHeaders = requestHeaderProxy || [];
-  extraHeaders.forEach(([key, value]: string[]) => {
-    if (!key || !value) return;
-    headers[key] = value;
-  });
+  // const { headers } = response;
+  // const extraHeaders = requestHeaderProxy || [];
+  // extraHeaders.forEach(([key, value]: string[]) => {
+  //   if (!key || !value) return;
+  //   headers[key] = value;
+  // });
   return response;
 };
 
@@ -172,7 +172,7 @@ const proxy = (request, callback, startTime = Date.now()) => {
 const genLogData = (request, response) => {
   return {
     url: request.url,
-    data: response,
+    response,
   };
 };
 
@@ -203,9 +203,11 @@ const initXhook = () => {
         response = response.clone();
         if (typeof response.text === 'string') {
           data = genLogData(request, response.text);
+          page.send({ type: EVENT.record, data });
         } else {
           response.text().then((streamedResponse) => {
             data = genLogData(request, streamedResponse);
+            page.send({ type: EVENT.record, data });
           });
         }
       } else {
@@ -213,8 +215,8 @@ const initXhook = () => {
           request,
           typeof response.text === 'string' ? response.text : ''
         );
+        page.send({ type: EVENT.record, data });
       }
-      page.send({ type: EVENT.record, data });
     } catch (error) {
       console.log(error);
     }
