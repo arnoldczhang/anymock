@@ -23,6 +23,11 @@ const routes = [
     component: () => import('@/pages/blacklist/index.vue'),
   },
   {
+    path: '/recorder',
+    name: 'recorder',
+    component: () => import('@/pages/recorder/index.vue'),
+  },
+  {
     path: '/test',
     name: 'test',
     component: () => import('@/pages/test/index.vue'),

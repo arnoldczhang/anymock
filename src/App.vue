@@ -66,7 +66,7 @@ import { setStorage, getCurrentStorage } from '@/utils/storage';
 import { copy } from '@/utils/index';
 import useCommonStore from '@/store/common';
 import ImportDialog from './pages/detail/components/import-dialog.vue';
-import { HOME, REQ_HEADER, BLACK_LIST } from '@/const/router';
+import { HOME, REQ_HEADER, RECORDER, BLACK_LIST } from '@/const/router';
 import {
   BLACKLIST_KEY,
   CURRENT_GROUP_ID_KEY,
@@ -85,7 +85,7 @@ const avatar = ref('');
 const importDialogRef = ref<InstanceType<typeof ImportDialog>>();
 const menuVisible = computed(() => route.name);
 
-const routeList = [HOME, REQ_HEADER, BLACK_LIST];
+const routeList = [HOME, REQ_HEADER, RECORDER, BLACK_LIST];
 
 const handleSelect = (name: string) => {
   pageName.value = name === 'detail' ? 'home' : name;
@@ -198,7 +198,7 @@ syncUserInfo();
     max-width: 200px;
     flex-shrink: 0;
     box-sizing: border-box;
-    border-right: 1px solid #e9e9eb;
+    border-right: 1px solid @border;
     display: flex;
     flex-direction: column;
     &--top {

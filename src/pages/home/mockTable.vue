@@ -47,14 +47,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <p class="footer">
+    <footer class="footer">
       <el-button
         class="btn"
         type="danger"
         size="small"
         @click="handleDeleteAllMock"
       >
-        清空所有mock
+        清空mock
       </el-button>
       <!-- <el-button
         class="btn"
@@ -72,7 +72,7 @@
       >
         +新增mock
       </el-button>
-    </p>
+    </footer>
   </article>
 </template>
 <script setup lang="ts">

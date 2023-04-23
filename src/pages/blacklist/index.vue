@@ -31,12 +31,19 @@
       </template>
     </main>
     <footer class="footer">
-      <el-button type="primary" @click="handleAdd">新增黑名单</el-button>
-      <el-button v-if="list.length" type="success" @click="handleSave">
+      <el-button
+        v-if="list.length"
+        size="small"
+        type="success"
+        @click="handleSave"
+      >
         保存
       </el-button>
-      <el-button type="danger" @click="($event) => handleDelete()">
-        清空
+      <el-button type="danger" size="small" @click="($event) => handleDelete()">
+        清空黑名单
+      </el-button>
+      <el-button type="primary" size="small" class="mr8" @click="handleAdd">
+        +新增黑名单
       </el-button>
     </footer>
   </article>
@@ -109,6 +116,7 @@ onMounted(async () => {
     }
   }
   .footer {
+    border-top: 1px solid @border;
     display: flex;
     justify-content: end;
     padding: 10px 0;

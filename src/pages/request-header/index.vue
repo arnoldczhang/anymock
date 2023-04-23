@@ -196,7 +196,7 @@ onMounted(async () => {
     align-items: center;
     box-sizing: border-box;
     width: 20%;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid @border;
     &--main {
       box-sizing: border-box;
       height: calc(~'100vh - 48px');
@@ -233,7 +233,7 @@ onMounted(async () => {
         }
         &--top {
           height: 24px;
-          border-bottom: 1px solid #ccc;
+          border-bottom: 1px solid @border;
         }
         &--bottom {
           display: flex;
@@ -252,7 +252,7 @@ onMounted(async () => {
     }
     &--bottom {
       box-sizing: border-box;
-      border-top: 1px solid #ccc;
+      border-top: 1px solid @border;
       height: 48px;
       width: 100%;
       display: flex;
@@ -267,7 +267,7 @@ onMounted(async () => {
       height: 56px;
       align-items: center;
       padding: 0 16px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid @border;
       justify-content: space-between;
     }
     &--empty {
