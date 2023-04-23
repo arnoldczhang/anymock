@@ -1,45 +1,40 @@
-import { MessageType } from '../types/mock.d';
+import type { MessageType } from '../types/mock.d';
 
 let tabId: number;
 
 /**
  * 【通信】给content-script发消息
  *
- * 两种场景：
- *
- * 场景1：开发者工具独立window
- *  > tabId: -1
- *  > 向所有active: true的window发消息
- *
- * 场景2：开发者工具在window内
- *  > 向active: true，currentWindow: true 发消息
+ * - 向所有active: true的window发消息
  *
  * @param message
  * @param callback
  * @returns
  */
-export const sendRuntimeMessage = (
-  message: MessageType,
-  callback?: Function
-) => {
+export const sendTabMessage = (message: MessageType, callback?: Function) => {
   if (!chrome?.tabs) {
     return console.log(message);
   }
+
   // console.log('发送消息到content-script');
-  chrome.tabs.query(
-    {
-      active: true,
-    },
-    function (tabs) {
-      // 兼容开发者工具独立窗口的场景（会存在未加载content.js的页面抛错，暂未解决）
-      tabs.forEach((tab) => {
-        if (!tab.id || tab.id === -1) return;
-        chrome.tabs.sendMessage(tab.id, message, function (response) {
-          if (callback) callback(response);
+
+  // 兼容开发者工具独立窗口的场景（会存在未加载content.js的页面抛错，暂未解决）
+  chrome.windows.getLastFocused((currentWindow) => {
+    chrome.tabs.query(
+      {
+        active: true,
+        windowId: currentWindow.id,
+      },
+      (tabs) => {
+        tabs.forEach((tab) => {
+          if (!tab.id || tab.id === -1) return;
+          chrome.tabs.sendMessage(tab.id, message, function (response) {
+            if (callback) callback(response);
+          });
         });
-      });
-    }
-  );
+      }
+    );
+  });
 };
 
 /**
@@ -47,6 +42,10 @@ export const sendRuntimeMessage = (
  * @param callback
  */
 export const listenRuntimeMessage = (callback: Function) => {
+  if (!chrome?.runtime) {
+    return;
+  }
+
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // console.log('收到来自content-script的消息');
     if (callback) {
@@ -55,6 +54,17 @@ export const listenRuntimeMessage = (callback: Function) => {
       sendResponse();
     }
   });
+};
+
+/**
+ * 【通信】卸载接收content-script消息
+ * @param callback
+ */
+export const unlistenRuntimeMessage = (callback: any) => {
+  if (!chrome?.runtime) {
+    return;
+  }
+  chrome.runtime.onMessage.removeListener(callback);
 };
 
 /**
@@ -82,6 +92,17 @@ export const listenPageMessage = (callback: Function) => {
     if (event.source !== window) return;
     callback(event);
   });
+};
+
+/**
+ *
+ * @param message
+ */
+export const sendRuntimeMessage = (message: MessageType) => {
+  if (!chrome?.runtime) {
+    return;
+  }
+  chrome.runtime.sendMessage(message);
 };
 
 /**
@@ -148,12 +169,44 @@ export const getCurrentUrl = async (): Promise<string> => {
   });
 };
 
+/**
+ * 刷新当前tab
+ *
+ * 注：不支持开发者工具独立window
+ *
+ * @param callback
+ * @returns
+ */
+export const reloadCurrentTab = (callback?: any) => {
+  if (!chrome?.tabs) {
+    return location.reload();
+  }
+
+  chrome.tabs.query(
+    {
+      active: true,
+      currentWindow: true,
+    },
+    function (tabs) {
+      tabs.forEach((tab) => {
+        if (!tab.id || tab.id === -1) return;
+        chrome.tabs.reload(tab.id, callback);
+      });
+    }
+  );
+};
+
 export const runtime = {
   send: sendRuntimeMessage,
   listen: listenRuntimeMessage,
+  unlisten: unlistenRuntimeMessage,
 };
 
 export const page = {
   send: sendPageMessage,
   listen: listenPageMessage,
+};
+
+export const tab = {
+  send: sendTabMessage,
 };

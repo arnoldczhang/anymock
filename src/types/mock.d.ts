@@ -131,3 +131,8 @@ export type ReqHeaderItem = {
 };
 
 export type ReqHeaderList = ReqHeaderItem[];
+
+export type Log = {
+  url: string;
+  response: string;
+};

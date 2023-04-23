@@ -63,8 +63,11 @@
 import { DocumentCopy, Refresh } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
 import { setStorage, getCurrentStorage } from '@/utils/storage';
+import { runtime } from '@/utils/message';
 import { copy } from '@/utils/index';
 import useCommonStore from '@/store/common';
+import useLogStore from '@/store/log';
+import type { MessageType, Log } from '@/types/mock.d';
 import ImportDialog from './pages/detail/components/import-dialog.vue';
 import { HOME, REQ_HEADER, RECORDER, BLACK_LIST } from '@/const/router';
 import {
@@ -74,8 +77,11 @@ import {
   MOCK_INTERFACE_KEY,
   REQ_HEADER_KEY,
 } from './const/storageKey';
+import EVENT from './const/event';
 
-const store = useCommonStore();
+const routeList = [HOME, REQ_HEADER, RECORDER, BLACK_LIST];
+const commonStore = useCommonStore();
+const logStore = useLogStore();
 const route = useRoute();
 const router = useRouter();
 const pageName = ref<string>(route.name as string);
@@ -85,8 +91,6 @@ const avatar = ref('');
 const importDialogRef = ref<InstanceType<typeof ImportDialog>>();
 const menuVisible = computed(() => route.name);
 
-const routeList = [HOME, REQ_HEADER, RECORDER, BLACK_LIST];
-
 const handleSelect = (name: string) => {
   pageName.value = name === 'detail' ? 'home' : name;
   router.push({ name });
@@ -94,7 +98,7 @@ const handleSelect = (name: string) => {
 
 const showReqHeaderTip = (route: typeof REQ_HEADER) => {
   if (route.name !== REQ_HEADER.name) return false;
-  return store.hasReqHeaderProxy;
+  return commonStore.hasReqHeaderProxy;
 };
 
 const handleOpenLoginPage = () => {
@@ -176,6 +180,15 @@ const syncUserInfo = async () => {
   // TODO 登录账号
 };
 
+const listenLogs = () => {
+  runtime.listen((message: MessageType) => {
+    const { type, data } = message;
+    if (type === EVENT.record) {
+      logStore.add(data as Log);
+    }
+  });
+};
+
 watch(
   () => route.path,
   () => {
@@ -184,7 +197,8 @@ watch(
 );
 
 onMounted(() => {
-  store.updateReqHeader();
+  commonStore.updateReqHeader();
+  listenLogs();
 });
 syncUserInfo();
 </script>

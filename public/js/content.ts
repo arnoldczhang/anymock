@@ -132,25 +132,23 @@ const appendScript = () => {
     freshData();
     watchVisibility();
   };
+};
+
+const initListener = () => {
   // 【通信】接收extension发来的通知更新
   runtime.listen(({ type }) => {
     if (type === EVENT.update) {
       freshData();
     }
   });
+  // 【通信】接收script.ts发来的通知
+  page.listen((event) => {
+    const { type, data } = event.data?.data || {};
+    if (type === EVENT.record) {
+      runtime.send({ type, data });
+    }
+  });
 };
 
-// const checkIfAppendScript = () => {
-//   chrome.storage.local.get([BLACKLIST_KEY], (data) => {
-//     const { blacklist } = data;
-//     const { href } = location;
-//     if (!Array.isArray(blacklist) || !blacklist.length) return appendScript();
-//     const inBlacklist = blacklist.some(
-//       ({ url }) => href === url || href.indexOf(url) > -1
-//     );
-//     if (inBlacklist) return;
-//     appendScript();
-//   });
-// };
-
 appendScript();
+initListener();

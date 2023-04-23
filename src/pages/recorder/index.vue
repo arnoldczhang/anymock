@@ -3,7 +3,13 @@
     <main class="container__body">
       <el-empty v-if="!list.length" class="container__body--empty" />
       <template v-else>
-        <section v-for="item in list" class="url__item" :key="item.key" />
+        <section
+          v-for="(item, index) in list"
+          class="url__item"
+          :key="item.url + index"
+        >
+          {{ item.url }}
+        </section>
       </template>
     </main>
     <footer class="footer">
@@ -16,17 +22,18 @@
 <script setup lang="ts">
 import { ElMessage as Message } from 'element-plus';
 import { Ref } from 'vue';
+import useLogStore from '@/store/log';
 import { Url } from '@/types/mock.d';
 import { getStorage, setStorage } from '@/utils/storage';
-import { genBlackListItem } from '@/utils';
-import { getCurrentUrl } from '@/utils/message';
-import { BLACKLIST_KEY } from '@/const/storageKey';
+import { reloadCurrentTab } from '@/utils/message';
 
-const list: Ref<Url[]> = ref([]);
+const store = useLogStore();
+const list = computed(() => store.logs);
 
-const handleRecord = async () => {};
-
-onMounted(async () => {});
+const handleRecord = async () => {
+  store.clear();
+  reloadCurrentTab();
+};
 </script>
 <style scoped lang="less">
 .container {
