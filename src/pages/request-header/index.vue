@@ -189,15 +189,16 @@ onMounted(async () => {
 </script>
 <style lang="less" scoped>
 .container {
-  &:extend(.border-box);
   &__aside {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    width: 20%;
+    width: calc(~'20% - 8px');
+    margin-right: 8px;
     border-right: 1px solid @border;
+    &:extend(.border-box);
     &--main {
       box-sizing: border-box;
       height: calc(~'100vh - 48px');
@@ -263,6 +264,7 @@ onMounted(async () => {
   }
   &__body {
     width: 80%;
+    &:extend(.border-box);
     &--top {
       display: flex;
       height: 56px;
