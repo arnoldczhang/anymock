@@ -14,7 +14,7 @@
     </main>
     <footer class="footer">
       <el-button
-        :type="loading ? 'success' : 'warning'"
+        :type="loading ? 'warning' : 'success'"
         :loading="loading"
         size="small"
         class="mr8"
