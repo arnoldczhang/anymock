@@ -511,6 +511,9 @@ const goBack = () => {
   padding: 12px;
   &:extend(.border-box);
   margin-bottom: 8px;
+  :deep(.card__title--left) {
+    max-width: 300px;
+  }
 }
 .mock__item {
   width: 100%;
@@ -541,6 +544,7 @@ const goBack = () => {
         display: inline-block;
         flex-shrink: 0;
         font-size: 14px;
+        max-width: 300px;
       }
     }
   }

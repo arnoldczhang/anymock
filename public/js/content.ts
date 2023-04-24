@@ -5,7 +5,7 @@ import {
   REQ_HEADER_KEY,
 } from '../../src/const/storageKey';
 import { runtime, page } from '../../src/utils/message';
-import { getState } from '../../src/service/recorder';
+import { updateState, getState } from '../../src/service/recorder';
 
 // 记录正在提示的信息
 const messageSet = new Set();
@@ -143,6 +143,7 @@ const initListener = () => {
         break;
       case EVENT.record_state:
         recording = data;
+        updateState(data);
         break;
       default:
         break;

@@ -1,16 +1,16 @@
 <template>
-  <section class="container">
+  <section class="text__overflow">
     <el-tooltip
-      class="container__tooltip"
+      class="text__overflow--tooltip"
       v-bind="attrs"
       :disabled="disabled || tooltipHidden"
       :content="content"
       popper-class="text__overflow--max-width"
     >
-      <p class="container__text">
+      <p class="text__overflow__text">
         <span
           ref="textRef"
-          class="container__text--inner"
+          class="text__overflow__text--inner"
           @mouseover="handleMouseOver"
         >
           {{ content || '-' }}
@@ -45,7 +45,7 @@ const handleMouseOver = () => {
 };
 </script>
 <style lang="less" scoped>
-.container {
+.text__overflow {
   flex: 1;
   &:extend(.omit);
   &__text {

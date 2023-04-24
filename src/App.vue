@@ -243,7 +243,7 @@ syncUserInfo();
     overflow: hidden;
     padding: 16px;
     box-sizing: border-box;
-    background-color: rgb(239, 241, 245);
+    background-color: rgb(240, 244, 249);
   }
 }
 </style>

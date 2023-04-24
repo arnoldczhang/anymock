@@ -13,7 +13,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.2.3",
     "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/state": "^6.2.0",
     "@codemirror/view": "^6.9.5",
     "@element-plus/icons-vue": "^2.0.10",
     "@vueuse/core": "^9.4.0",

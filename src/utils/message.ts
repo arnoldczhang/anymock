@@ -191,7 +191,7 @@ export const reloadCurrentTab = async (callback?: any) => {
 
   const tab = await getCurrentTab();
   if (!tab?.id || tab.id === -1) return Promise.resolve();
-  return chrome.tabs.reload(tab.id, callback);
+  return chrome.tabs.reload(tab.id, { bypassCache: true }, callback);
 };
 
 export const runtime = {

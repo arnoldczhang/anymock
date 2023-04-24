@@ -95,12 +95,12 @@ onMounted(async () => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  &:extend(.border-box);
   &__body {
     height: calc(100vh - 86px);
     padding: 16px;
     overflow-y: auto;
     margin-bottom: 8px;
-    &:extend(.border-box);
     &--empty {
       height: 100%;
     }
@@ -122,7 +122,6 @@ onMounted(async () => {
     display: flex;
     justify-content: end;
     padding: 10px 0;
-    &:extend(.border-box);
   }
 }
 </style>

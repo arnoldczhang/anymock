@@ -10,7 +10,7 @@
             :key="item.url + index"
           >
             <span class="url__item--left">
-              <TextOverflow :content="item.url" />
+              <TextOverflow :content="item.url" @click="handleView(item)" />
             </span>
             <span class="url__item--right">
               <el-link
@@ -20,13 +20,6 @@
                 @click="handleAddMock(item)"
               >
                 添加到mock
-              </el-link>
-              <el-link
-                type="primary"
-                :underline="false"
-                @click="handleView(item)"
-              >
-                查看
               </el-link>
             </span>
           </section>
@@ -50,24 +43,38 @@
   </article>
 </template>
 <script setup lang="ts">
+import { ElMessage as Message } from 'element-plus';
 import { VideoPause, VideoPlay } from '@element-plus/icons-vue';
 import useLogStore from '@/store/log';
 import type { Log } from '@/types/mock.d';
-import { reloadCurrentTab, runtime } from '@/utils/message';
+import { reloadCurrentTab, tab } from '@/utils/message';
 import EVENT from '@/const/event';
-import { api } from '@/service';
+import api from '@/service';
+import { useTableData } from '@/pages/home/useTableData';
 
 const store = useLogStore();
 const { logs } = storeToRefs(store);
 const jsonstr = ref('');
-const recording = ref(Boolean(api.recorder.getState()));
+const recording = ref(false);
+const groupId = ref('');
 const list = computed(() => logs.value);
+
+const { handleAddMockFromLog } = useTableData(computed(() => groupId.value));
 
 const handleRecord = async () => {
   recording.value = !recording.value;
 };
 
-const handleAddMock = (log: Log) => {};
+const handleAddMock = async (log: Log) => {
+  try {
+    const { url } = log;
+    const data = JSON.parse(jsonstr.value);
+    handleAddMockFromLog(url, data);
+    Message.success('添加成功');
+  } catch (err) {
+    Message.error('json数据解析失败');
+  }
+};
 
 const handleView = (log: Log) => {
   try {
@@ -77,31 +84,23 @@ const handleView = (log: Log) => {
   }
 };
 
-const handleVisibleChange = async () => {
-  if (!document.hidden) {
-    recording.value = Boolean(api.recorder.getState());
-  }
-};
-
 watch(
   () => recording.value,
   async (on: boolean) => {
-    api.recorder.updateState(on);
+    tab.send({ type: EVENT.record_state, data: on });
     if (on) {
       store.clear();
       reloadCurrentTab();
     }
-    runtime.send({ type: EVENT.record_state, data: on });
   }
 );
 
-onMounted(() => {
-  handleVisibleChange();
-  document.addEventListener('visibilitychange', handleVisibleChange);
+onBeforeUnmount(() => {
+  tab.send({ type: EVENT.record_state, data: '' });
 });
 
-onBeforeUnmount(() => {
-  document.removeEventListener('visibilitychange', handleVisibleChange);
+onMounted(async () => {
+  groupId.value = await api.currentGroupId.get();
 });
 </script>
 <style scoped lang="less">
@@ -110,21 +109,18 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  &:extend(.border-box);
   &__body {
     display: flex;
     height: calc(100vh - 86px);
     overflow-y: auto;
-    margin-bottom: 8px;
     &--empty {
       height: 100%;
       width: 100%;
-      &:extend(.border-box);
     }
     &--left {
       width: calc(~'60% - 8px');
-      margin-right: 8px;
       overflow-y: auto;
-      &:extend(.border-box);
       .url__item {
         box-sizing: border-box;
         display: flex;
@@ -154,7 +150,6 @@ onBeforeUnmount(() => {
     }
     &--right {
       width: 40%;
-      &:extend(.border-box);
     }
   }
   .sys-icon-add-box-fill {
@@ -165,7 +160,6 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: end;
     padding: 10px 0;
-    &:extend(.border-box);
   }
 }
 </style>

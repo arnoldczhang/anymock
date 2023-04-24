@@ -98,7 +98,7 @@ const tableProps = computed(
     ({
       'header-row-class-name': 'table__header',
       height: 'calc(100vh - 143px)',
-      class: 'border-box',
+      class: 'table__content',
       size: 'small',
     } as any)
 );
@@ -133,8 +133,12 @@ const handleClearStorage = async () => {
 <style scoped lang="less">
 .table {
   flex: 1;
+  &:extend(.border-box);
   :deep(.table__header) {
     height: 48px;
+  }
+  &__content {
+    border-radius: 4px 4px 0 0;
   }
 }
 .header--name {
@@ -157,6 +161,5 @@ const handleClearStorage = async () => {
   display: flex;
   justify-content: end;
   padding: 10px 0;
-  &:extend(.border-box);
 }
 </style>
