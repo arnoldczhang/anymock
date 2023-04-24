@@ -6,8 +6,10 @@ const EVENT = {
   init_req_header: 'init-req-header',
   // 初始化黑名单数据
   init_blacklist: 'init-blacklist',
-  // 请求录制
+  // page端录制
   record: 'record',
+  // 录制状态变更
+  record_state: 'record-state',
 };
 
 export default EVENT;

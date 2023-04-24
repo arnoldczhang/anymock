@@ -146,6 +146,24 @@ export const unListenTabActivated = (listener: (p: unknown) => void) => {
 };
 
 /**
+ *
+ * @returns
+ */
+export const getCurrentTab = async () => {
+  if (!chrome?.tabs) {
+    return;
+  }
+
+  const currentWindow = await chrome.windows.getLastFocused();
+  const tabs = await chrome.tabs.query({
+    active: true,
+    windowId: currentWindow.id,
+  });
+  if (!tabs.length) return;
+  return tabs[0];
+};
+
+/**
  * 获取当前url
  * @returns
  */
@@ -153,20 +171,9 @@ export const getCurrentUrl = async (): Promise<string> => {
   if (!chrome?.tabs) {
     return location.origin;
   }
-  return new Promise((resolve) => {
-    chrome.tabs.query(
-      {
-        active: true,
-        currentWindow: true,
-      },
-      function (tabs) {
-        if (!tabs[0]?.url) {
-          return resolve('');
-        }
-        resolve(new URL(`blob:${tabs[0].url}`).origin as string);
-      }
-    );
-  });
+  const tab = await getCurrentTab();
+  if (!tab) return '';
+  return new URL(`blob:${tab.url}`).origin;
 };
 
 /**
@@ -177,23 +184,14 @@ export const getCurrentUrl = async (): Promise<string> => {
  * @param callback
  * @returns
  */
-export const reloadCurrentTab = (callback?: any) => {
+export const reloadCurrentTab = async (callback?: any) => {
   if (!chrome?.tabs) {
     return location.reload();
   }
 
-  chrome.tabs.query(
-    {
-      active: true,
-      currentWindow: true,
-    },
-    function (tabs) {
-      tabs.forEach((tab) => {
-        if (!tab.id || tab.id === -1) return;
-        chrome.tabs.reload(tab.id, callback);
-      });
-    }
-  );
+  const tab = await getCurrentTab();
+  if (!tab?.id || tab.id === -1) return Promise.resolve();
+  return chrome.tabs.reload(tab.id, callback);
 };
 
 export const runtime = {

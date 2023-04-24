@@ -5,9 +5,13 @@ import {
   REQ_HEADER_KEY,
 } from '../../src/const/storageKey';
 import { runtime, page } from '../../src/utils/message';
+import { getState } from '../../src/service/recorder';
 
 // 记录正在提示的信息
 const messageSet = new Set();
+
+// 录制工具是否接收请求录制
+let recording = getState();
 
 /**
  * 通用提示
@@ -132,16 +136,23 @@ const watchVisibility = () => {
  */
 const initListener = () => {
   // 【通信】接收extension发来的通知更新
-  runtime.listen(({ type }) => {
-    if (type === EVENT.update) {
-      freshData();
+  runtime.listen(({ type, data }) => {
+    switch (type) {
+      case EVENT.update:
+        freshData();
+        break;
+      case EVENT.record_state:
+        recording = data;
+        break;
+      default:
+        break;
     }
   });
   // 【通信】接收script.ts发来的通知
   page.listen((event) => {
     const { type, data } = event.data?.data || {};
     if (type === EVENT.record) {
-      runtime.send({ type, data });
+      recording && runtime.send({ type, data });
     }
   });
 };
@@ -159,12 +170,11 @@ const appendScript = () => {
     // 植入脚本后，立刻获取mock数据
     freshData();
     watchVisibility();
-    initListener();
   };
 };
 
 /**
- *
+ * 【待定】校验非黑名单内才植入script.ts
  */
 const checkIfAppendScript = () => {
   chrome.storage.local.get([BLACKLIST_KEY], (data) => {
@@ -176,6 +186,7 @@ const checkIfAppendScript = () => {
     );
     if (inBlacklist) return;
     appendScript();
+    initListener();
   });
 };
 

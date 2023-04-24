@@ -15,3 +15,6 @@ export const BLACKLIST_KEY = 'blacklist';
 
 // 请求头存储key
 export const REQ_HEADER_KEY = 'reqHeader';
+
+// 录制状态
+export const RECORDER_STATE_KEY = '$$__recorderStateKey__$$__anymock';

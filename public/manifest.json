@@ -5,6 +5,7 @@
   "description": "mock mock",
   "permissions": [
     "storage",
+    "tabs",
     "cookies",
     "clipboardRead",
     "clipboardWrite",

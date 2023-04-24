@@ -60,7 +60,7 @@ const refreshRequestQueue = () => {
   while (requestQueue.length) {
     const result = requestQueue.shift();
     if (result === undefined) continue;
-    proxy(...result);
+    proxyResponse(...result);
   }
 };
 
@@ -133,9 +133,8 @@ const proxyResponseHeader = (response) => {
  * @param startTime
  * @returns
  */
-const proxy = (request, callback, startTime = Date.now()) => {
+const proxyResponse = (request, callback, startTime = Date.now()) => {
   const { url, body } = request;
-  proxyRequestHeader(request);
   const mock = isMocked({ url });
   if (!mock) return callback();
   try {
@@ -169,6 +168,12 @@ const proxy = (request, callback, startTime = Date.now()) => {
   }
 };
 
+/**
+ *
+ * @param request
+ * @param response
+ * @returns
+ */
 const genLogData = (request, response) => {
   return {
     url: request.url,
@@ -176,50 +181,56 @@ const genLogData = (request, response) => {
   };
 };
 
+/**
+ *
+ * @param request
+ * @param response
+ * @returns
+ */
+const recordResponse = (request, response) => {
+  try {
+    let data;
+    if (typeof response.clone === 'function') {
+      response = response.clone();
+      if (typeof response.text === 'string') {
+        data = genLogData(request, response.text);
+        return page.send({ type: EVENT.record, data });
+      }
+      return response.text().then((streamedResponse) => {
+        data = genLogData(request, streamedResponse);
+        page.send({ type: EVENT.record, data });
+      });
+    }
+    data = genLogData(
+      request,
+      typeof response.text === 'string' ? response.text : ''
+    );
+    page.send({ type: EVENT.record, data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const initXhook = () => {
   xhook.before((request, callback) => {
     // 黑名单内，直接返回
     if (inBlacklist) return callback();
+    proxyRequestHeader(request);
     const ready = isReady();
     // 未准备就绪，异步执行
     if (!ready) return requestQueue.push([request, callback, Date.now()]);
     // 可以代理了
-    proxy(request, callback);
+    proxyResponse(request, callback);
   });
 
   xhook.after((request, response) => {
     // 黑名单内，直接返回
     if (inBlacklist) return;
+    proxyResponseHeader(response);
     const { url } = request;
-    response = proxyResponseHeader(response);
     // 已经mock的接口就不录进去了
-    if (isMocked({ url })) {
-      return;
-    }
-
-    try {
-      let data;
-      if (typeof response.clone === 'function') {
-        response = response.clone();
-        if (typeof response.text === 'string') {
-          data = genLogData(request, response.text);
-          page.send({ type: EVENT.record, data });
-        } else {
-          response.text().then((streamedResponse) => {
-            data = genLogData(request, streamedResponse);
-            page.send({ type: EVENT.record, data });
-          });
-        }
-      } else {
-        data = genLogData(
-          request,
-          typeof response.text === 'string' ? response.text : ''
-        );
-        page.send({ type: EVENT.record, data });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    if (isMocked({ url })) return;
+    recordResponse(request, response);
   });
 };
 

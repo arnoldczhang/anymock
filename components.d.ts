@@ -51,5 +51,6 @@ declare module '@vue/runtime-core' {
     JsonEditor: typeof import('./src/components/json-editor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TextOverflow: typeof import('./src/components/text-overflow.vue')['default']
   }
 }
