@@ -117,15 +117,9 @@ const handleSave = async () => {
   try {
     await api.reqHeader.update(toRaw(list.value));
     store.updateReqHeader();
-    Message({
-      type: 'success',
-      message: '保存成功',
-    });
+    Message.success('保存成功');
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `保存失败，原因：${err.message}`,
-    });
+    Message.error(`保存失败，原因：${err.message}`);
   }
 };
 

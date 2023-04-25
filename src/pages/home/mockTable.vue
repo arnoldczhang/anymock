@@ -47,39 +47,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <footer class="footer">
-      <el-button
-        class="btn"
-        type="danger"
-        size="small"
-        @click="handleDeleteAllMock"
-      >
-        清空mock
-      </el-button>
-      <!-- <el-button
-        class="btn"
-        type="danger"
-        size="small"
-        @click="handleClearStorage"
-      >
-        清空storage(仅用于调试)
-      </el-button> -->
-      <el-button
-        class="btn mr8"
-        type="primary"
-        size="small"
-        @click="handleAddMock"
-      >
-        +新增mock
-      </el-button>
-    </footer>
   </article>
 </template>
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
-import { MockItem } from '@/types/mock';
-import { clearStorage } from '@/utils/storage';
-import { ElMessage as Message } from 'element-plus';
+import type { MockItem } from '@/types/mock';
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 import { useTableData } from './useTableData';
 
@@ -97,8 +69,7 @@ const tableProps = computed(
   () =>
     ({
       'header-row-class-name': 'table__header',
-      height: 'calc(100vh - 143px)',
-      class: 'table__content',
+      height: 'calc(100vh - 83px)',
       size: 'small',
     } as any)
 );
@@ -121,24 +92,16 @@ const handleGoDetail = (data: MockItem) => {
 
 useTabActiveListener(getTableData);
 
-const handleClearStorage = async () => {
-  await clearStorage();
-  Message({
-    type: 'success',
-    message: '清空成功',
-  });
-  location.reload();
-};
+defineExpose({
+  handleDeleteAllMock,
+  handleAddMock,
+});
 </script>
 <style scoped lang="less">
 .table {
   flex: 1;
-  &:extend(.border-box);
   :deep(.table__header) {
     height: 48px;
-  }
-  &__content {
-    border-radius: 4px 4px 0 0;
   }
 }
 .header--name {

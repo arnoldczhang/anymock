@@ -1,5 +1,5 @@
 <template>
-  <el-col>
+  <main class="container">
     <el-page-header @back="goBack" title="返回接口列表" class="back-header">
       <template #content>
         <input-view
@@ -180,7 +180,7 @@
         @add="handleAddNode"
       />
     </article>
-  </el-col>
+  </main>
 </template>
 <script setup lang="ts">
 import { ElTree as Tree, ElMessage as Message } from 'element-plus';
@@ -507,10 +507,14 @@ onMounted(init);
 useTabActiveListener(init);
 </script>
 <style scoped lang="less">
+.container {
+  &:extend(.border-box);
+  flex-direction: column;
+}
 .back-header {
   padding: 12px;
-  &:extend(.border-box);
   margin-bottom: 8px;
+  border-bottom: 1px solid @border;
   :deep(.card__title--left) {
     max-width: 300px;
   }
@@ -519,7 +523,6 @@ useTabActiveListener(init);
   width: 100%;
   overflow-y: auto;
   height: calc(100vh - 94px);
-  &:extend(.border-box);
   box-sizing: border-box;
   padding: 16px;
 

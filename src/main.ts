@@ -19,8 +19,13 @@ const initListener = () => {
   const logStore = useLogStore();
   runtime.listen((message: MessageType) => {
     const { type, data } = message;
-    if (type === EVENT.record) {
-      logStore.add(data as Log);
+    switch (type) {
+      case EVENT.record:
+        logStore.add(data as Log);
+        break;
+      case EVENT.inactive:
+        logStore.refresh();
+        break;
     }
   });
 };

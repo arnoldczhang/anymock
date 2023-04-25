@@ -102,7 +102,11 @@ export const sendRuntimeMessage = (message: MessageType) => {
   if (!chrome?.runtime) {
     return;
   }
-  chrome.runtime.sendMessage(message);
+  try {
+    chrome.runtime.sendMessage(message);
+  } catch (err) {
+    // console.log(err);
+  }
 };
 
 /**

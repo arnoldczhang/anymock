@@ -10,6 +10,8 @@ const EVENT = {
   record: 'record',
   // 录制状态变更
   record_state: 'record-state',
+  // mock面板关闭/隐藏时
+  inactive: 'inactive',
 };
 
 export default EVENT;

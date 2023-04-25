@@ -72,7 +72,7 @@ const notify = (message = '', option = {}) => {
 };
 
 /**
- *
+ * 统一的获取storage数据
  */
 const freshData = () => {
   try {
@@ -121,7 +121,7 @@ const freshData = () => {
 };
 
 /**
- *
+ * 监听页面可见性
  */
 const watchVisibility = () => {
   document.addEventListener('visibilitychange', () => {
@@ -159,7 +159,7 @@ const initListener = () => {
 };
 
 /**
- *
+ * 注入inject脚本
  */
 const appendScript = () => {
   const script = document.createElement('script');

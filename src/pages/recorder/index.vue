@@ -51,9 +51,10 @@ import { reloadCurrentTab, tab } from '@/utils/message';
 import EVENT from '@/const/event';
 import api from '@/service';
 import { useTableData } from '@/pages/home/useTableData';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const store = useLogStore();
-const { logs } = storeToRefs(store);
+const { logs, state } = storeToRefs(store);
 const jsonstr = ref('');
 const recording = ref(false);
 const groupId = ref('');
@@ -84,6 +85,13 @@ const handleView = (log: Log) => {
   }
 };
 
+const init = async () => {
+  groupId.value = await api.currentGroupId.get();
+  recording.value = false;
+};
+
+watch(() => state.value, init);
+
 watch(
   () => recording.value,
   async (on: boolean) => {
@@ -99,9 +107,8 @@ onBeforeUnmount(() => {
   tab.send({ type: EVENT.record_state, data: '' });
 });
 
-onMounted(async () => {
-  groupId.value = await api.currentGroupId.get();
-});
+onMounted(init);
+useTabActiveListener(init);
 </script>
 <style scoped lang="less">
 .container {
