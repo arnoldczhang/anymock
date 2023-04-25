@@ -129,6 +129,9 @@ const watchVisibility = () => {
       freshData();
     }
   });
+  window.addEventListener('focus', () => {
+    freshData();
+  });
 };
 
 /**

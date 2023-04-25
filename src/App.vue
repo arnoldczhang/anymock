@@ -11,7 +11,6 @@
         active-text-color="#ffd04b"
         background-color="rgb(36,39,50)"
         class="container__aside--center"
-        :style="{ width: collapse ? '64px' : '199px' }"
         :default-active="pageName"
         :collapse="collapse"
         menu-trigger="click"
@@ -39,14 +38,18 @@
           <el-link
             :underline="false"
             class="mr16"
-            :icon="DocumentCopy"
+            :icon="Upload"
             @click="handleCopyAllStorage"
           >
             导出
           </el-link>
         </el-tooltip>
-        <el-tooltip content="同步配置">
-          <el-link :underline="false" :icon="Refresh" @click="handleOpenDialog">
+        <el-tooltip content="导入他人配置">
+          <el-link
+            :underline="false"
+            :icon="Download"
+            @click="handleOpenDialog"
+          >
             导入
           </el-link>
         </el-tooltip>
@@ -63,7 +66,7 @@
   </main>
 </template>
 <script setup lang="ts">
-import { DocumentCopy, Refresh } from '@element-plus/icons-vue';
+import { Upload, Download } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
 import { setStorage, getCurrentStorage } from '@/utils/storage';
 import { copy } from '@/utils/index';
@@ -163,11 +166,6 @@ const handlePasteAllStorage = async (jsonStr: string) => {
 
 const syncUserInfo = async () => {
   // TODO 登录账号
-  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=827');
-  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=829');
-  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=809');
-  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=810');
-  // fetch('https://mdhweekly.com/weekly/issue-0092.json');
 };
 
 watch(
@@ -189,8 +187,9 @@ syncUserInfo();
   width: 100%;
   height: 100%;
   &__aside {
-    width: 200px;
-    max-width: 200px;
+    &:not(.el-menu--collapse) {
+      width: 200px;
+    }
     flex-shrink: 0;
     box-sizing: border-box;
     border-right: 1px solid @border;

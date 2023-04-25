@@ -3,8 +3,8 @@
     <el-page-header @back="goBack" title="返回接口列表" class="back-header">
       <template #content>
         <input-view
-          label="接口："
-          :text="`接口：${mockItem.name || '--'}`"
+          label=""
+          :text="`${mockItem.name || '--'}`"
           class="card__title--left"
           :model="mockItem.name"
           @confirm="(val: string) => handleUpdateMockName(mockItem, val)"
@@ -51,8 +51,8 @@
         <template #header>
           <header class="card__header">
             <input-view
-              label="案例："
-              :text="`案例：${tag.name || '--'}`"
+              :label="`案例${index + 1}：`"
+              :text="`案例${index + 1}：${tag.name || '--'}`"
               class="card__title--left"
               :model="tag.name"
               @confirm="(val: string) => handleUpdateTagName(tag, val)"

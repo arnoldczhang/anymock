@@ -125,12 +125,21 @@ export const listenTabActivated = (callback: Function) => {
     };
     document.addEventListener('visibilitychange', listener);
   } else {
-    listener = (activeInfo: any) => {
-      if (activeInfo.tabId === tabId) {
-        if (callback) callback();
-        console.log(`tab：${tabId} 激活`);
+    listener = (win: any) => {
+      // tab切换
+      if (win.tabId) {
+        if (win.tabId === tabId) {
+          if (callback) callback();
+          console.log(`tab：${tabId} 激活`);
+        }
+        // window窗口切换
+      } else {
+        if (win !== chrome.windows.WINDOW_ID_NONE) {
+          if (callback) callback();
+        }
       }
     };
+    chrome.windows.onFocusChanged.addListener(listener);
     chrome.tabs.onActivated.addListener(listener);
   }
   return listener;
@@ -146,6 +155,7 @@ export const unListenTabActivated = (listener: (p: unknown) => void) => {
     document.removeEventListener('visibilitychange', listener);
     return;
   }
+  chrome.windows.onFocusChanged.removeListener(listener);
   chrome.tabs.onActivated.removeListener(listener);
 };
 

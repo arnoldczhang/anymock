@@ -94,4 +94,8 @@ defineExpose({
 .sys-icon-check-line {
   color: #31bf30;
 }
+
+.input__container {
+  position: relative;
+}
 </style>
