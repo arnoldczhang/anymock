@@ -208,3 +208,6 @@ export const page = {
 export const tab = {
   send: sendTabMessage,
 };
+
+// @important 【别删】同步当前tabid
+getCurrentTab().then((tab) => (tabId = tab?.id || -1));

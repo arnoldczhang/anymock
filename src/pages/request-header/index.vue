@@ -107,6 +107,7 @@ import { ReqHeaderList, ReqHeaderItem } from '@/types/mock';
 import { genDefaultReqHeader } from '@/utils';
 import useCommonStore from '@/store/common';
 import { api } from '@/service';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const list: Ref<ReqHeaderList> = ref([]);
 const currentConfig: Ref<ReqHeaderItem | null> = ref(null);
@@ -181,11 +182,14 @@ const handleTagChange = async (tag: ReqHeaderItem, selected: boolean) => {
   await handleSave();
 };
 
-onMounted(async () => {
+const init = async () => {
   list.value = await api.reqHeader.getList();
   currentConfig.value =
     list.value.find((tag: ReqHeaderItem) => tag.selected) || null;
-});
+};
+
+onMounted(init);
+useTabActiveListener(init);
 </script>
 <style lang="less" scoped>
 .container {

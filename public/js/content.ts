@@ -170,7 +170,6 @@ const appendScript = () => {
     (this as HTMLScriptElement).remove();
     // 植入脚本后，立刻获取mock数据
     freshData();
-    watchVisibility();
   };
 };
 
@@ -191,4 +190,5 @@ const checkIfAppendScript = () => {
   });
 };
 
+watchVisibility();
 checkIfAppendScript();

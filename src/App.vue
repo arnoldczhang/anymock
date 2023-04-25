@@ -100,22 +100,15 @@ const showReqHeaderTip = (route: typeof REQ_HEADER) => {
 };
 
 const handleOpenLoginPage = () => {
-  alert('敬请期待');
+  Message.warning('敬请期待');
 };
 
 const handleCopyAllStorage = () => {
   const result = copy(JSON.stringify(getCurrentStorage()));
   if (result) {
-    Message({
-      type: 'success',
-      message: '复制成功',
-    });
-  } else {
-    Message({
-      type: 'error',
-      message: '复制失败',
-    });
+    return Message.success('复制成功');
   }
+  Message.error('复制失败');
 };
 
 const handleOpenDialog = () => {
@@ -161,26 +154,20 @@ const handlePasteAllStorage = async (jsonStr: string) => {
       await setStorage(REQ_HEADER_KEY, reqHeader);
     }
 
-    Message({
-      type: 'success',
-      message: '同步成功',
-    });
+    Message.success('同步成功');
     setTimeout(() => router.go(0), 1000);
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `同步失败，原因：${err.message}`,
-    });
+    Message.error(`同步失败，原因：${err.message}`);
   }
 };
 
 const syncUserInfo = async () => {
   // TODO 登录账号
-  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=827');
-  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=829');
-  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=809');
-  fetch('https://adx.36kr.com/api/ad/show?param.positionIds=810');
-  fetch('https://mdhweekly.com/weekly/issue-0092.json');
+  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=827');
+  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=829');
+  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=809');
+  // fetch('https://adx.36kr.com/api/ad/show?param.positionIds=810');
+  // fetch('https://mdhweekly.com/weekly/issue-0092.json');
 };
 
 watch(
@@ -193,6 +180,7 @@ watch(
 onMounted(() => {
   commonStore.updateReqHeader();
 });
+
 syncUserInfo();
 </script>
 <style scoped lang="less">

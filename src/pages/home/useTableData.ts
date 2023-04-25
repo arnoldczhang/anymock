@@ -74,10 +74,7 @@ export const useTableData = (groupId: ComputedRef<string>) => {
       });
       await api.mock.clearList(groupId.value);
       await getTableData();
-      Message({
-        type: 'success',
-        message: '清空成功',
-      });
+      Message.success('清空成功');
     } catch (err) {
       // 取消时暂不处理
     }

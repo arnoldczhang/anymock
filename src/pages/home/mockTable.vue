@@ -80,7 +80,7 @@ import { Search } from '@element-plus/icons-vue';
 import { MockItem } from '@/types/mock';
 import { clearStorage } from '@/utils/storage';
 import { ElMessage as Message } from 'element-plus';
-import { useTabActiveListener } from './useTabActiveListener';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 import { useTableData } from './useTableData';
 
 const props = withDefaults(

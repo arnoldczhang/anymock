@@ -208,7 +208,7 @@ import ImportDialog from './components/import-dialog.vue';
 import AddDialog from './components/add-dialog.vue';
 import TreeEditDrawer from './components/tree-edit-drawer.vue';
 import { useMockItemData } from './useMockItemData';
-import { useTabActiveListener } from '../home/useTabActiveListener';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const route = useRoute();
 const router = useRouter();
@@ -487,6 +487,10 @@ const parseNodeValue = (data: any) => {
   return String(value);
 };
 
+const goBack = () => {
+  return router.push({ name: 'home' });
+};
+
 /**
  * 取当前编辑的接口
  */
@@ -498,13 +502,9 @@ const init = async () => {
     goBack();
   }
 };
+
 onMounted(init);
-
 useTabActiveListener(init);
-
-const goBack = () => {
-  return router.push({ name: 'home' });
-};
 </script>
 <style scoped lang="less">
 .back-header {

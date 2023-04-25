@@ -4,6 +4,7 @@ import * as currentMockList from './currentMockList';
 import * as currentGroupId from './currentGroupId';
 import * as reqHeader from './reqHeader';
 import * as recorder from './recorder';
+import * as blacklist from './blacklist';
 
 export const api = {
   mock,
@@ -12,6 +13,7 @@ export const api = {
   currentMockList,
   reqHeader,
   recorder,
+  blacklist,
 };
 
 export default api;

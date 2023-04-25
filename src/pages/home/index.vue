@@ -60,7 +60,7 @@
 import MockTable from './mockTable.vue';
 import { useMockGroup } from './useMockGroup';
 import EditInputValueDialog from '@/components/edit-input-value-dialog.vue';
-import { useTabActiveListener } from './useTabActiveListener';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const {
   currentMockGroup,

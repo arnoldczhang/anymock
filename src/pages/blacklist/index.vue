@@ -52,10 +52,10 @@
 import { ElMessage as Message } from 'element-plus';
 import { Ref } from 'vue';
 import { Url } from '@/types/mock.d';
-import { getStorage, setStorage } from '@/utils/storage';
 import { genBlackListItem } from '@/utils';
 import { getCurrentUrl } from '@/utils/message';
-import { BLACKLIST_KEY } from '@/const/storageKey';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import api from '@/service';
 
 const list: Ref<Url[]> = ref([]);
 
@@ -65,11 +65,8 @@ const handleAdd = async () => {
 };
 
 const handleSave = async () => {
-  await setStorage(BLACKLIST_KEY, toRaw(list.value));
-  Message({
-    type: 'success',
-    message: '操作成功，请刷新页面',
-  });
+  await api.blacklist.update(toRaw(list.value));
+  Message.success('操作成功，请刷新页面');
 };
 
 const handleCopy = async (index: number) => {
@@ -85,9 +82,12 @@ const handleDelete = async (index?: number) => {
   await handleSave();
 };
 
-onMounted(async () => {
-  list.value = await getStorage(BLACKLIST_KEY, []);
-});
+const init = async () => {
+  list.value = await api.blacklist.get([]);
+};
+
+onMounted(init);
+useTabActiveListener(init);
 </script>
 <style scoped lang="less">
 .container {
