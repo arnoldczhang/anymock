@@ -16,6 +16,9 @@ let interceptor: MockItem[] | undefined = undefined;
 // 请求头配置
 let requestHeaderProxy = undefined;
 
+// 响应头配置
+let responseHeaderProxy = undefined;
+
 // 当前页面是否在黑名单内
 let inBlacklist = undefined;
 
@@ -78,6 +81,9 @@ const initListener = () => {
       case EVENT.init_req_header:
         requestHeaderProxy = data;
         break;
+      case EVENT.init_res_header:
+        responseHeaderProxy = data;
+        break;
       case EVENT.init_blacklist:
         inBlacklist = data;
         break;
@@ -112,12 +118,12 @@ const proxyRequestHeader = (
  * @param response
  */
 const proxyResponseHeader = (response) => {
-  // const { headers } = response;
-  // const extraHeaders = requestHeaderProxy || [];
-  // extraHeaders.forEach(([key, value]: string[]) => {
-  //   if (!key || !value) return;
-  //   headers[key] = value;
-  // });
+  const { headers } = response;
+  const extraHeaders = responseHeaderProxy || [];
+  extraHeaders.forEach(([key, value]: string[]) => {
+    if (!key || !value) return;
+    headers[key] = value;
+  });
   return response;
 };
 

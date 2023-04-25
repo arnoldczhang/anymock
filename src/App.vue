@@ -68,21 +68,29 @@
 <script setup lang="ts">
 import { Upload, Download } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
-import { setStorage, getCurrentStorage } from '@/utils/storage';
+import { getCurrentStorage } from '@/utils/storage';
 import { copy } from '@/utils/index';
 import useCommonStore from '@/store/common';
+import api from '@/service';
 import ImportDialog from './pages/detail/components/import-dialog.vue';
-import { HOME, REQ_HEADER, RECORDER, BLACK_LIST } from '@/const/router';
+import {
+  HOME,
+  REQ_HEADER,
+  RES_HEADER,
+  RECORDER,
+  BLACK_LIST,
+} from '@/const/router';
 import {
   BLACKLIST_KEY,
   CURRENT_GROUP_ID_KEY,
   MOCK_GROUP_KEY,
   MOCK_INTERFACE_KEY,
   REQ_HEADER_KEY,
+  RES_HEADER_KEY,
 } from './const/storageKey';
 
-const routeList = [HOME, REQ_HEADER, RECORDER, BLACK_LIST];
-const commonStore = useCommonStore();
+const routeList = [HOME, REQ_HEADER, RES_HEADER, RECORDER, BLACK_LIST];
+const store = useCommonStore();
 const route = useRoute();
 const router = useRouter();
 const pageName = ref<string>(route.name as string);
@@ -98,8 +106,9 @@ const handleSelect = (name: string) => {
 };
 
 const showReqHeaderTip = (route: typeof REQ_HEADER) => {
-  if (route.name !== REQ_HEADER.name) return false;
-  return commonStore.hasReqHeaderProxy;
+  if (route.name === REQ_HEADER.name) return store.hasReqHeaderProxy;
+  if (route.name === RES_HEADER.name) return store.hasResHeaderProxy;
+  return false;
 };
 
 const handleOpenLoginPage = () => {
@@ -135,28 +144,17 @@ const handlePasteAllStorage = async (jsonStr: string) => {
       [CURRENT_GROUP_ID_KEY]: currentGroupId = '',
       [BLACKLIST_KEY]: blacklist = [],
       [REQ_HEADER_KEY]: reqHeader = [],
+      [RES_HEADER_KEY]: resHeader = [],
     } = JSON.parse(jsonStr);
 
-    if (Array.isArray(mockGroup)) {
-      await setStorage(MOCK_GROUP_KEY, mockGroup);
-    }
-
-    if (Array.isArray(table)) {
-      await setStorage(MOCK_INTERFACE_KEY, table);
-    }
-
-    if (currentGroupId) {
-      await setStorage(CURRENT_GROUP_ID_KEY, currentGroupId);
-    }
-
-    if (Array.isArray(blacklist)) {
-      await setStorage(BLACKLIST_KEY, blacklist);
-    }
-
-    if (Array.isArray(reqHeader)) {
-      await setStorage(REQ_HEADER_KEY, reqHeader);
-    }
-
+    await Promise.all([
+      Array.isArray(mockGroup) && api.group.update(mockGroup),
+      Array.isArray(table) && api.mock.update(table),
+      currentGroupId && api.currentGroupId.update(currentGroupId),
+      Array.isArray(blacklist) && api.blacklist.update(blacklist),
+      Array.isArray(reqHeader) && api.reqHeader.update(reqHeader),
+      Array.isArray(resHeader) && api.resHeader.update(resHeader),
+    ]);
     Message.success('同步成功');
     setTimeout(() => router.go(0), 1000);
   } catch (err: any) {
@@ -176,7 +174,8 @@ watch(
 );
 
 onMounted(() => {
-  commonStore.updateReqHeader();
+  store.updateReqHeader();
+  store.updateResHeader();
 });
 
 syncUserInfo();

@@ -54,6 +54,17 @@ export const genDefaultReqHeader = (): ReqHeaderItem => ({
 });
 
 /**
+ * 生成响应头默认结构
+ * @returns
+ */
+export const genDefaultResHeader = (): ReqHeaderItem => ({
+  id: uuid(),
+  name: `响应头-${Date.now()}`,
+  selected: false,
+  params: [],
+});
+
+/**
  * 填充数组中的默认元素
  * @returns
  */

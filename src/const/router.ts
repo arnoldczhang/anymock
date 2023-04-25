@@ -12,6 +12,13 @@ export const REQ_HEADER = {
   name: 'header',
 };
 
+export const RES_HEADER = {
+  path: '/resheader',
+  label: '响应头',
+  icon: 'Document',
+  name: 'resheader',
+};
+
 export const BLACK_LIST = {
   path: '/blacklist',
   label: '黑名单',

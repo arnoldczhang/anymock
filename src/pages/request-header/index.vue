@@ -113,9 +113,23 @@ const list: Ref<ReqHeaderList> = ref([]);
 const currentConfig: Ref<ReqHeaderItem | null> = ref(null);
 const store = useCommonStore();
 
+const props = withDefaults(
+  defineProps<{
+    saveHandler?: Function;
+    genHandler?: Function;
+    getHandler?: Function;
+  }>(),
+  {}
+);
+
 const handleSave = async () => {
+  const result = toRaw(list.value);
+  if (typeof props.saveHandler === 'function') {
+    return await props.saveHandler(result);
+  }
+
   try {
-    await api.reqHeader.update(toRaw(list.value));
+    await api.reqHeader.update(result);
     store.updateReqHeader();
     Message.success('保存成功');
   } catch (err: any) {
@@ -124,7 +138,7 @@ const handleSave = async () => {
 };
 
 const handleAdd = async () => {
-  list.value.push(genDefaultReqHeader());
+  list.value.push((props.genHandler || genDefaultReqHeader)());
   await handleSave();
 };
 
@@ -177,7 +191,7 @@ const handleTagChange = async (tag: ReqHeaderItem, selected: boolean) => {
 };
 
 const init = async () => {
-  list.value = await api.reqHeader.getList();
+  list.value = await (props.getHandler || api.reqHeader.getList)();
   currentConfig.value =
     list.value.find((tag: ReqHeaderItem) => tag.selected) || null;
 };

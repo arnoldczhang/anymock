@@ -4,6 +4,8 @@ const EVENT = {
   init_data: 'init-data',
   // 初始化请求头数据
   init_req_header: 'init-req-header',
+  // 初始化响应头数据
+  init_res_header: 'init-res-header',
   // 初始化黑名单数据
   init_blacklist: 'init-blacklist',
   // page端录制

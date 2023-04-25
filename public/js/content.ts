@@ -3,6 +3,7 @@ import {
   BLACKLIST_KEY,
   CURRENT_MOCK_LIST_KEY,
   REQ_HEADER_KEY,
+  RES_HEADER_KEY,
 } from '../../src/const/storageKey';
 import { runtime, page } from '../../src/utils/message';
 import { updateState, getState } from '../../src/service/recorder';
@@ -77,11 +78,12 @@ const notify = (message = '', option = {}) => {
 const freshData = () => {
   try {
     chrome.storage.local.get(
-      [BLACKLIST_KEY, CURRENT_MOCK_LIST_KEY, REQ_HEADER_KEY],
+      [BLACKLIST_KEY, CURRENT_MOCK_LIST_KEY, REQ_HEADER_KEY, RES_HEADER_KEY],
       (data) => {
         const {
           [CURRENT_MOCK_LIST_KEY]: currentMockList = [],
           [REQ_HEADER_KEY]: reqHeader = [],
+          [RES_HEADER_KEY]: resHeader = [],
           [BLACKLIST_KEY]: blacklist = [],
         } = data;
         // 推送当前mock列表
@@ -96,6 +98,13 @@ const freshData = () => {
           type: EVENT.init_req_header,
           data: Array.isArray(reqHeader)
             ? reqHeader.find(({ selected }) => selected)?.params || []
+            : [],
+        });
+        // 推送响应头
+        page.send({
+          type: EVENT.init_res_header,
+          data: Array.isArray(resHeader)
+            ? resHeader.find(({ selected }) => selected)?.params || []
             : [],
         });
         const { href } = location;
