@@ -9,7 +9,7 @@
         v-if="menuVisible"
         text-color="rgb(126, 129, 142)"
         active-text-color="#ffd04b"
-        background-color="rgb(36,39,50)"
+        :background-color="sidbarColor"
         class="container__aside--center"
         :default-active="pageName"
         :collapse="collapse"
@@ -97,6 +97,7 @@ const pageName = ref<string>(route.name as string);
 const collapse = ref(false);
 const user = ref('');
 const avatar = ref('');
+const sidbarColor = ref('rgb(36,39,50)');
 const importDialogRef = ref<InstanceType<typeof ImportDialog>>();
 const menuVisible = computed(() => route.name);
 
@@ -186,6 +187,7 @@ syncUserInfo();
   width: 100%;
   height: 100%;
   &__aside {
+    box-shadow: var(--el-box-shadow-dark);
     &:not(.el-menu--collapse) {
       width: 200px;
     }
@@ -194,7 +196,7 @@ syncUserInfo();
     border-right: 1px solid @border;
     display: flex;
     flex-direction: column;
-    background-color: rgb(36, 39, 50);
+    background-color: v-bind(sidbarColor);
     color: #fff;
     &--top {
       cursor: pointer;
@@ -209,6 +211,7 @@ syncUserInfo();
     &--center {
       flex: 1;
       border-right: none;
+      overflow-y: auto;
     }
     &--bottom {
       display: flex;
