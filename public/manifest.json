@@ -5,6 +5,7 @@
   "description": "mock & management",
   "permissions": [
     "storage",
+    "tabs",
     "clipboardRead",
     "clipboardWrite",
     "unlimitedStorage"

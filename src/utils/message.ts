@@ -2,6 +2,8 @@ import type { MessageType } from '../types/mock.d';
 
 let tabId: number;
 
+let windowId: number;
+
 /**
  * 【通信】给content-script发消息
  *
@@ -11,7 +13,10 @@ let tabId: number;
  * @param callback
  * @returns
  */
-export const sendTabMessage = (message: MessageType, callback?: Function) => {
+export const sendTabMessage = async (
+  message: MessageType,
+  callback?: Function
+) => {
   if (!chrome?.tabs) {
     return console.log(message);
   }
@@ -23,7 +28,7 @@ export const sendTabMessage = (message: MessageType, callback?: Function) => {
     chrome.tabs.query(
       {
         active: true,
-        windowId: currentWindow.id,
+        windowId: windowId || currentWindow.id,
       },
       (tabs) => {
         tabs.forEach((tab) => {
@@ -159,15 +164,19 @@ export const unListenTabActivated = (listener: (p: unknown) => void) => {
   chrome.tabs.onActivated.removeListener(listener);
 };
 
+export const getCurrentWindow = async () => {
+  if (!chrome?.windows) return;
+  const currentWindow = await chrome.windows.getLastFocused();
+  if (!currentWindow?.id) return;
+  return currentWindow;
+};
+
 /**
  *
  * @returns
  */
 export const getCurrentTab = async () => {
-  if (!chrome?.tabs) {
-    return;
-  }
-
+  if (!chrome?.tabs) return;
   const currentWindow = await chrome.windows.getLastFocused();
   const tabs = await chrome.tabs.query({
     active: true,
@@ -225,3 +234,5 @@ export const tab = {
 
 // @important 【别删】同步当前tabid
 getCurrentTab().then((tab) => (tabId = tab?.id || -1));
+// @important 【别删】同步当前windowid
+getCurrentWindow().then((win) => (windowId = win?.id || -1));
