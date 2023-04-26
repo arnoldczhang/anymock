@@ -30,15 +30,15 @@ export const getStorage = async (key: string, defaultValue: any = null) => {
   await checkStorage();
   if (useStorage) {
     return getDefaultValue(storageData[key], defaultValue);
-  } else {
-    try {
-      return getDefaultValue(
-        JSON.parse(localStorage.getItem(key) || 'null'),
-        defaultValue
-      );
-    } catch (e) {
-      // TODO
-    }
+  }
+
+  try {
+    return getDefaultValue(
+      JSON.parse(localStorage.getItem(key) || 'null'),
+      defaultValue
+    );
+  } catch (e) {
+    // TODO
   }
 };
 

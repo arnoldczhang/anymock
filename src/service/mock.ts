@@ -66,6 +66,10 @@ export const copyList = async ({
   await updateList(toList, toId);
 };
 
+export const update = async (list: MockItem[]) => {
+  await setStorage(MOCK_INTERFACE_KEY, list);
+};
+
 // 获取接口
 export const get = async (id: string) => {
   await getMockInterfaceListFromStorage();
@@ -76,12 +80,14 @@ export const get = async (id: string) => {
     return Promise.reject();
   }
 };
+
 // 删除接口
 export const remove = async (id: string) => {
   const index = mockInterfaceList.findIndex((item) => item.id === id);
   mockInterfaceList.splice(index, 1);
   await updateInterfaceListToStorage();
 };
+
 // 修改接口
 export const modify = async (mockInterface: MockItem) => {
   const index = mockInterfaceList.findIndex(

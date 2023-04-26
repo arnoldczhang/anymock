@@ -1,10 +1,10 @@
 <template>
-  <el-col>
+  <main class="container">
     <el-page-header @back="goBack" title="返回接口列表" class="back-header">
       <template #content>
         <input-view
-          label="接口："
-          :text="`接口：${mockItem.name || '--'}`"
+          label=""
+          :text="`${mockItem.name || '--'}`"
           class="card__title--left"
           :model="mockItem.name"
           @confirm="(val: string) => handleUpdateMockName(mockItem, val)"
@@ -51,8 +51,8 @@
         <template #header>
           <header class="card__header">
             <input-view
-              label="案例："
-              :text="`案例：${tag.name || '--'}`"
+              :label="`案例${index + 1}：`"
+              :text="`案例${index + 1}：${tag.name || '--'}`"
               class="card__title--left"
               :model="tag.name"
               @confirm="(val: string) => handleUpdateTagName(tag, val)"
@@ -180,7 +180,7 @@
         @add="handleAddNode"
       />
     </article>
-  </el-col>
+  </main>
 </template>
 <script setup lang="ts">
 import { ElTree as Tree, ElMessage as Message } from 'element-plus';
@@ -208,7 +208,7 @@ import ImportDialog from './components/import-dialog.vue';
 import AddDialog from './components/add-dialog.vue';
 import TreeEditDrawer from './components/tree-edit-drawer.vue';
 import { useMockItemData } from './useMockItemData';
-import { useTabActiveListener } from '../home/useTabActiveListener';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const route = useRoute();
 const router = useRouter();
@@ -487,6 +487,10 @@ const parseNodeValue = (data: any) => {
   return String(value);
 };
 
+const goBack = () => {
+  return router.push({ name: 'home' });
+};
+
 /**
  * 取当前编辑的接口
  */
@@ -498,22 +502,27 @@ const init = async () => {
     goBack();
   }
 };
+
 onMounted(init);
-
 useTabActiveListener(init);
-
-const goBack = () => {
-  return router.push({ name: 'home' });
-};
 </script>
 <style scoped lang="less">
+.container {
+  &:extend(.border-box);
+  flex-direction: column;
+}
 .back-header {
   padding: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid @border;
+  :deep(.card__title--left) {
+    max-width: 300px;
+  }
 }
 .mock__item {
   width: 100%;
   overflow-y: auto;
-  height: calc(100vh - 54px);
+  height: calc(100vh - 94px);
   box-sizing: border-box;
   padding: 16px;
 
@@ -538,6 +547,7 @@ const goBack = () => {
         display: inline-block;
         flex-shrink: 0;
         font-size: 14px;
+        max-width: 300px;
       }
     }
   }

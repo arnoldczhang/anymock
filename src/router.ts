@@ -13,6 +13,11 @@ const routes = [
     component: () => import('@/pages/request-header/index.vue'),
   },
   {
+    path: '/resheader',
+    name: 'resheader',
+    component: () => import('@/pages/response-header/index.vue'),
+  },
+  {
     path: '/detail/:id',
     name: 'detail',
     component: () => import('@/pages/detail/index.vue'),
@@ -21,6 +26,11 @@ const routes = [
     path: '/blacklist',
     name: 'blacklist',
     component: () => import('@/pages/blacklist/index.vue'),
+  },
+  {
+    path: '/recorder',
+    name: 'recorder',
+    component: () => import('@/pages/recorder/index.vue'),
   },
   {
     path: '/test',

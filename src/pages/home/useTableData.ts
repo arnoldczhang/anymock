@@ -1,8 +1,8 @@
 import { MockItem, Tag } from '@/types/mock';
-import { genMockInterface } from '@/utils';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
 import { ComputedRef } from 'vue';
 import { api } from '@/service';
+import { genMockInterface, transfromJson2TreeData, genTag } from '@/utils';
 import { STATUS } from '@/const';
 
 export const useTableData = (groupId: ComputedRef<string>) => {
@@ -23,6 +23,23 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     await handleSave();
   };
 
+  /**
+   * 基于给定url和json生成mock
+   *
+   * @param name
+   * @param originData
+   */
+  const handleAddMockFromLog = async (
+    name: string,
+    originData: Record<string, any>
+  ) => {
+    const data = transfromJson2TreeData(originData);
+    const mock = genMockInterface(groupId.value, name);
+    mock.tags = [genTag(originData, data)];
+    tableData.value.push(mock);
+    await handlePureSave();
+  };
+
   const handleStateChange = async (data: MockItem) => {
     const allDisabled =
       data.tags.length &&
@@ -40,12 +57,13 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     await handleSave();
   };
 
-  const handleSave = async () => {
+  const handlePureSave = async () => {
     await api.mock.updateList(toRaw(tableData.value), groupId.value);
-    Message({
-      type: 'success',
-      message: '保存成功',
-    });
+  };
+
+  const handleSave = async () => {
+    await handlePureSave();
+    Message.success('保存成功');
   };
 
   const handleDeleteAllMock = async () => {
@@ -57,10 +75,7 @@ export const useTableData = (groupId: ComputedRef<string>) => {
       });
       await api.mock.clearList(groupId.value);
       await getTableData();
-      Message({
-        type: 'success',
-        message: '清空成功',
-      });
+      Message.success('清空成功');
     } catch (err) {
       // 取消时暂不处理
     }
@@ -79,6 +94,7 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     searchTableData,
     handleStateChange,
     handleAddMock,
+    handleAddMockFromLog,
     handleDeleteMock,
     handleDeleteAllMock,
     handleSave,

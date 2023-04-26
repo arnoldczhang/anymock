@@ -1,7 +1,7 @@
 <template>
   <section class="input__container">
     <span v-if="!editing" class="container--readonly">
-      {{ props.text }}
+      <TextOverflow :content="props.text" />
       <c-icon
         class="ml8"
         icon="Edit"
@@ -93,5 +93,9 @@ defineExpose({
 }
 .sys-icon-check-line {
   color: #31bf30;
+}
+
+.input__container {
+  position: relative;
 }
 </style>

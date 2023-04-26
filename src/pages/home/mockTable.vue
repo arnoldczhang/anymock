@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <article class="table">
     <el-table :data="searchTableData" v-bind="tableProps">
       <el-table-column prop="name" label="接口" show-overflow-tooltip>
         <template #header>
@@ -15,7 +15,7 @@
           </header>
         </template>
       </el-table-column>
-      <el-table-column prop="delay" label="请求延时" show-overflow-tooltip>
+      <el-table-column prop="delay" label="请求延时" width="420">
         <template #default="{ row }">
           <el-radio-group v-model="row.delay" @change="handleSave">
             <el-radio :label="false">关闭</el-radio>
@@ -38,49 +38,31 @@
       </el-table-column>
       <el-table-column prop="operation" label="操作">
         <template #default="{ row }">
-          <el-button type="success" size="small" @click="handleGoDetail(row)">
+          <el-button
+            type="success"
+            size="small"
+            :tabindex="-1"
+            @click="handleGoDetail(row)"
+          >
             编辑
           </el-button>
-          <el-button type="danger" size="small" @click="handleDeleteMock(row)">
+          <el-button
+            type="danger"
+            size="small"
+            :tabindex="-1"
+            @click="handleDeleteMock(row)"
+          >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <p class="footer">
-      <el-button
-        class="btn"
-        type="danger"
-        size="small"
-        @click="handleDeleteAllMock"
-      >
-        清空所有mock
-      </el-button>
-      <!-- <el-button
-        class="btn"
-        type="danger"
-        size="small"
-        @click="handleClearStorage"
-      >
-        清空storage(仅用于调试)
-      </el-button> -->
-      <el-button
-        class="btn mr8"
-        type="primary"
-        size="small"
-        @click="handleAddMock"
-      >
-        +新增mock
-      </el-button>
-    </p>
   </article>
 </template>
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
-import { MockItem } from '@/types/mock';
-import { clearStorage } from '@/utils/storage';
-import { ElMessage as Message } from 'element-plus';
-import { useTabActiveListener } from './useTabActiveListener';
+import type { MockItem } from '@/types/mock';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 import { useTableData } from './useTableData';
 
 const props = withDefaults(
@@ -96,7 +78,8 @@ const router = useRouter();
 const tableProps = computed(
   () =>
     ({
-      height: 'calc(100vh - 95px)',
+      'header-row-class-name': 'table__header',
+      height: 'calc(100vh - 83px)',
       size: 'small',
     } as any)
 );
@@ -119,18 +102,17 @@ const handleGoDetail = (data: MockItem) => {
 
 useTabActiveListener(getTableData);
 
-const handleClearStorage = async () => {
-  await clearStorage();
-  Message({
-    type: 'success',
-    message: '清空成功',
-  });
-  location.reload();
-};
+defineExpose({
+  handleDeleteAllMock,
+  handleAddMock,
+});
 </script>
 <style scoped lang="less">
-article {
+.table {
   flex: 1;
+  :deep(.table__header) {
+    height: 48px;
+  }
 }
 .header--name {
   display: flex;
@@ -148,6 +130,7 @@ article {
   }
 }
 .footer {
+  margin-top: 8px;
   display: flex;
   justify-content: end;
   padding: 10px 0;

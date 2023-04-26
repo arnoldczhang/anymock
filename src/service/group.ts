@@ -27,6 +27,10 @@ const updateMockGroupListToStorage = async () => {
   await setStorage(MOCK_GROUP_KEY, mockGroupList);
 };
 
+export const update = async (list: MockGroup[]) => {
+  await setStorage(MOCK_GROUP_KEY, list);
+};
+
 // 添加分组
 export const add = async (name: string) => {
   const newMockGroup = genMockGroup(name);

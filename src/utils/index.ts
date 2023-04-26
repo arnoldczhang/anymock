@@ -7,6 +7,7 @@ import {
   TreeData,
   Tree,
   ReqHeaderItem,
+  Json,
 } from '@/types/mock.d';
 
 /**
@@ -48,6 +49,17 @@ export const genDefaultTreeData = (): Tree => ({
 export const genDefaultReqHeader = (): ReqHeaderItem => ({
   id: uuid(),
   name: `请求头-${Date.now()}`,
+  selected: false,
+  params: [],
+});
+
+/**
+ * 生成响应头默认结构
+ * @returns
+ */
+export const genDefaultResHeader = (): ReqHeaderItem => ({
+  id: uuid(),
+  name: `响应头-${Date.now()}`,
   selected: false,
   params: [],
 });
@@ -108,7 +120,7 @@ export const genTreeData = (): TreeData => {
  * 生成单个案例通用结构
  * @returns
  */
-export const genTag = (): Tag => {
+export const genTag = (originData?: Json, data?: TreeData[]): Tag => {
   const random = Date.now();
   return {
     id: uuid(),
@@ -116,8 +128,8 @@ export const genTag = (): Tag => {
     nameCn: genCaseNameCn(random),
     description: '这是一个案例',
     status: STATUS.enable,
-    originData: { data: null },
-    data: [genTreeData()],
+    originData: originData || { data: null },
+    data: data || [genTreeData()],
   };
 };
 
@@ -125,13 +137,13 @@ export const genTag = (): Tag => {
  * 生成单个代理通用结构
  * @returns
  */
-export const genMockInterface = (groupId = ''): MockItem => {
+export const genMockInterface = (groupId = '', name = ''): MockItem => {
   const random = Date.now();
   return {
     id: uuid(),
     groupId,
-    name: `/api/list_${random}`,
-    nameCn: `列表_${random}`,
+    name: name || `/api/list_${random}`,
+    nameCn: name || `列表_${random}`,
     status: STATUS.enable,
     delay: false,
     tags: [genTag()],

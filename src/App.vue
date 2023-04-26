@@ -7,8 +7,10 @@
       </section>
       <el-menu
         v-if="menuVisible"
+        text-color="rgb(126, 129, 142)"
+        active-text-color="#ffd04b"
+        :background-color="sidbarColor"
         class="container__aside--center"
-        :style="{ width: collapse ? '64px' : '199px' }"
         :default-active="pageName"
         :collapse="collapse"
         menu-trigger="click"
@@ -36,14 +38,18 @@
           <el-link
             :underline="false"
             class="mr16"
-            :icon="DocumentCopy"
+            :icon="Upload"
             @click="handleCopyAllStorage"
           >
             导出
           </el-link>
         </el-tooltip>
-        <el-tooltip content="同步配置">
-          <el-link :underline="false" :icon="Refresh" @click="handleOpenDialog">
+        <el-tooltip content="导入他人配置">
+          <el-link
+            :underline="false"
+            :icon="Download"
+            @click="handleOpenDialog"
+          >
             导入
           </el-link>
         </el-tooltip>
@@ -60,21 +66,30 @@
   </main>
 </template>
 <script setup lang="ts">
-import { DocumentCopy, Refresh } from '@element-plus/icons-vue';
+import { Upload, Download } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
-import { setStorage, getCurrentStorage } from '@/utils/storage';
+import { getCurrentStorage } from '@/utils/storage';
 import { copy } from '@/utils/index';
 import useCommonStore from '@/store/common';
+import api from '@/service';
 import ImportDialog from './pages/detail/components/import-dialog.vue';
-import { HOME, REQ_HEADER, BLACK_LIST } from '@/const/router';
+import {
+  HOME,
+  REQ_HEADER,
+  RES_HEADER,
+  RECORDER,
+  BLACK_LIST,
+} from '@/const/router';
 import {
   BLACKLIST_KEY,
   CURRENT_GROUP_ID_KEY,
   MOCK_GROUP_KEY,
   MOCK_INTERFACE_KEY,
   REQ_HEADER_KEY,
+  RES_HEADER_KEY,
 } from './const/storageKey';
 
+const routeList = [HOME, REQ_HEADER, RES_HEADER, RECORDER, BLACK_LIST];
 const store = useCommonStore();
 const route = useRoute();
 const router = useRouter();
@@ -82,10 +97,9 @@ const pageName = ref<string>(route.name as string);
 const collapse = ref(false);
 const user = ref('');
 const avatar = ref('');
+const sidbarColor = ref('rgb(36,39,50)');
 const importDialogRef = ref<InstanceType<typeof ImportDialog>>();
 const menuVisible = computed(() => route.name);
-
-const routeList = [HOME, REQ_HEADER, BLACK_LIST];
 
 const handleSelect = (name: string) => {
   pageName.value = name === 'detail' ? 'home' : name;
@@ -93,27 +107,21 @@ const handleSelect = (name: string) => {
 };
 
 const showReqHeaderTip = (route: typeof REQ_HEADER) => {
-  if (route.name !== REQ_HEADER.name) return false;
-  return store.hasReqHeaderProxy;
+  if (route.name === REQ_HEADER.name) return store.hasReqHeaderProxy;
+  if (route.name === RES_HEADER.name) return store.hasResHeaderProxy;
+  return false;
 };
 
 const handleOpenLoginPage = () => {
-  alert('敬请期待');
+  Message.warning('敬请期待');
 };
 
 const handleCopyAllStorage = () => {
   const result = copy(JSON.stringify(getCurrentStorage()));
   if (result) {
-    Message({
-      type: 'success',
-      message: '复制成功',
-    });
-  } else {
-    Message({
-      type: 'error',
-      message: '复制失败',
-    });
+    return Message.success('复制成功');
   }
+  Message.error('复制失败');
 };
 
 const handleOpenDialog = () => {
@@ -137,38 +145,21 @@ const handlePasteAllStorage = async (jsonStr: string) => {
       [CURRENT_GROUP_ID_KEY]: currentGroupId = '',
       [BLACKLIST_KEY]: blacklist = [],
       [REQ_HEADER_KEY]: reqHeader = [],
+      [RES_HEADER_KEY]: resHeader = [],
     } = JSON.parse(jsonStr);
 
-    if (Array.isArray(mockGroup)) {
-      await setStorage(MOCK_GROUP_KEY, mockGroup);
-    }
-
-    if (Array.isArray(table)) {
-      await setStorage(MOCK_INTERFACE_KEY, table);
-    }
-
-    if (currentGroupId) {
-      await setStorage(CURRENT_GROUP_ID_KEY, currentGroupId);
-    }
-
-    if (Array.isArray(blacklist)) {
-      await setStorage(BLACKLIST_KEY, blacklist);
-    }
-
-    if (Array.isArray(reqHeader)) {
-      await setStorage(REQ_HEADER_KEY, reqHeader);
-    }
-
-    Message({
-      type: 'success',
-      message: '同步成功',
-    });
+    await Promise.all([
+      Array.isArray(mockGroup) && api.group.update(mockGroup),
+      Array.isArray(table) && api.mock.update(table),
+      currentGroupId && api.currentGroupId.update(currentGroupId),
+      Array.isArray(blacklist) && api.blacklist.update(blacklist),
+      Array.isArray(reqHeader) && api.reqHeader.update(reqHeader),
+      Array.isArray(resHeader) && api.resHeader.update(resHeader),
+    ]);
+    Message.success('同步成功');
     setTimeout(() => router.go(0), 1000);
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `同步失败，原因：${err.message}`,
-    });
+    Message.error(`同步失败，原因：${err.message}`);
   }
 };
 
@@ -185,7 +176,9 @@ watch(
 
 onMounted(() => {
   store.updateReqHeader();
+  store.updateResHeader();
 });
+
 syncUserInfo();
 </script>
 <style scoped lang="less">
@@ -194,13 +187,17 @@ syncUserInfo();
   width: 100%;
   height: 100%;
   &__aside {
-    width: 200px;
-    max-width: 200px;
+    box-shadow: var(--el-box-shadow-dark);
+    &:not(.el-menu--collapse) {
+      width: 200px;
+    }
     flex-shrink: 0;
     box-sizing: border-box;
-    border-right: 1px solid #e9e9eb;
+    border-right: 1px solid @border;
     display: flex;
     flex-direction: column;
+    background-color: v-bind(sidbarColor);
+    color: #fff;
     &--top {
       cursor: pointer;
       display: flex;
@@ -209,15 +206,20 @@ syncUserInfo();
       flex-shrink: 0;
       height: 50px;
       box-sizing: border-box;
-      padding: 0 16px;
+      padding: 0 21px;
     }
     &--center {
       flex: 1;
       border-right: none;
+      overflow-y: auto;
     }
     &--bottom {
       display: flex;
       justify-content: center;
+      height: 40px;
+      :deep(.el-link) {
+        color: #fff;
+      }
     }
     .aside__link {
       display: block;
@@ -228,6 +230,9 @@ syncUserInfo();
   &__content {
     flex: 1;
     overflow: hidden;
+    padding: 16px;
+    box-sizing: border-box;
+    background-color: rgb(240, 244, 249);
   }
 }
 </style>

@@ -18,7 +18,7 @@ export default defineConfig({
       eslintrc: {
         enabled: true,
       },
-      imports: ['vue', 'vue-router'],
+      imports: ['vue', 'vue-router', 'pinia'],
       dts: './auto-imports.d.ts',
     }),
     Components({
@@ -38,6 +38,19 @@ export default defineConfig({
       output: {
         manualChunks: {
           element: ['element-plus', '@element-plus/icons-vue'],
+        },
+      },
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          hack: `true; @import (reference) "${path.resolve(
+            __dirname,
+            'src/ui/style.less'
+          )}";`,
         },
       },
     },

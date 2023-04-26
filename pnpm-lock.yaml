@@ -1,7 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@codemirror/commands': ^6.2.3
   '@codemirror/lang-json': ^6.0.1
+  '@codemirror/state': ^6.2.0
   '@codemirror/view': ^6.9.5
   '@element-plus/icons-vue': ^2.0.10
   '@types/chrome': ^0.0.193
@@ -43,7 +45,9 @@ specifiers:
   xhook: ^1.5.5
 
 dependencies:
+  '@codemirror/commands': 6.2.3
   '@codemirror/lang-json': 6.0.1
+  '@codemirror/state': 6.2.0
   '@codemirror/view': 6.9.5
   '@element-plus/icons-vue': 2.0.10_vue@3.2.37
   '@vueuse/core': 9.4.0_vue@3.2.37
@@ -324,9 +328,10 @@ packages:
       to-fast-properties: r2.cnpmjs.org/to-fast-properties/2.0.0
     dev: true
 
-  /@codemirror/autocomplete/6.5.1_@codemirror+view@6.9.5:
+  /@codemirror/autocomplete/6.5.1_lbycbdjro43bwe3ueufpnuptg4:
     resolution: {integrity: sha512-/Sv9yJmqyILbZ26U4LBHnAtbikuVxWUp+rQ8BXuRGtxZfbfKOY/WPbsUtvSP2h0ZUZMlkxV/hqbKRFzowlA6xw==}
     peerDependencies:
+      '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
     dependencies:
       '@codemirror/language': 6.6.0
@@ -1580,7 +1585,7 @@ packages:
   /codemirror/6.0.1:
     resolution: {integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1_@codemirror+view@6.9.5
+      '@codemirror/autocomplete': 6.5.1_lbycbdjro43bwe3ueufpnuptg4
       '@codemirror/commands': 6.2.3
       '@codemirror/language': 6.6.0
       '@codemirror/lint': 6.2.1

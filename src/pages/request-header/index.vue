@@ -65,11 +65,17 @@
             <el-button
               type="primary"
               size="small"
+              :tabindex="-1"
               @click="handleAddHeaderParam"
             >
               +新增头字段
             </el-button>
-            <el-button type="success" size="small" @click="handleSave">
+            <el-button
+              type="success"
+              size="small"
+              :tabindex="-1"
+              @click="handleSave"
+            >
               保存
             </el-button>
           </span>
@@ -91,6 +97,7 @@
               type="danger"
               :icon="Delete"
               class="param__box--delete"
+              :tabindex="-1"
               @click="handleDeleteParam(index)"
             />
           </p>
@@ -107,29 +114,38 @@ import { ReqHeaderList, ReqHeaderItem } from '@/types/mock';
 import { genDefaultReqHeader } from '@/utils';
 import useCommonStore from '@/store/common';
 import { api } from '@/service';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const list: Ref<ReqHeaderList> = ref([]);
 const currentConfig: Ref<ReqHeaderItem | null> = ref(null);
 const store = useCommonStore();
 
+const props = withDefaults(
+  defineProps<{
+    saveHandler?: Function;
+    genHandler?: Function;
+    getHandler?: Function;
+  }>(),
+  {}
+);
+
 const handleSave = async () => {
+  const result = toRaw(list.value);
+  if (typeof props.saveHandler === 'function') {
+    return await props.saveHandler(result);
+  }
+
   try {
-    await api.reqHeader.update(toRaw(list.value));
+    await api.reqHeader.update(result);
     store.updateReqHeader();
-    Message({
-      type: 'success',
-      message: '保存成功',
-    });
+    Message.success('保存成功');
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `保存失败，原因：${err.message}`,
-    });
+    Message.error(`保存失败，原因：${err.message}`);
   }
 };
 
 const handleAdd = async () => {
-  list.value.push(genDefaultReqHeader());
+  list.value.push((props.genHandler || genDefaultReqHeader)());
   await handleSave();
 };
 
@@ -181,11 +197,14 @@ const handleTagChange = async (tag: ReqHeaderItem, selected: boolean) => {
   await handleSave();
 };
 
-onMounted(async () => {
-  list.value = await api.reqHeader.getList();
+const init = async () => {
+  list.value = await (props.getHandler || api.reqHeader.getList)();
   currentConfig.value =
     list.value.find((tag: ReqHeaderItem) => tag.selected) || null;
-});
+};
+
+onMounted(init);
+useTabActiveListener(init);
 </script>
 <style lang="less" scoped>
 .container {
@@ -195,8 +214,10 @@ onMounted(async () => {
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    width: 20%;
-    border-right: 1px solid #ccc;
+    width: calc(~'20% - 8px');
+    margin-right: 8px;
+    border-right: 1px solid @border;
+    &:extend(.border-box);
     &--main {
       box-sizing: border-box;
       height: calc(~'100vh - 48px');
@@ -233,7 +254,7 @@ onMounted(async () => {
         }
         &--top {
           height: 24px;
-          border-bottom: 1px solid #ccc;
+          border-bottom: 1px solid @border;
         }
         &--bottom {
           display: flex;
@@ -252,7 +273,7 @@ onMounted(async () => {
     }
     &--bottom {
       box-sizing: border-box;
-      border-top: 1px solid #ccc;
+      border-top: 1px solid @border;
       height: 48px;
       width: 100%;
       display: flex;
@@ -262,12 +283,13 @@ onMounted(async () => {
   }
   &__body {
     width: 80%;
+    &:extend(.border-box);
     &--top {
       display: flex;
       height: 56px;
       align-items: center;
       padding: 0 16px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid @border;
       justify-content: space-between;
     }
     &--empty {

@@ -8,8 +8,15 @@ export const HOME = {
 export const REQ_HEADER = {
   path: '/header',
   label: '请求头',
-  icon: 'House',
+  icon: 'Document',
   name: 'header',
+};
+
+export const RES_HEADER = {
+  path: '/resheader',
+  label: '响应头',
+  icon: 'Document',
+  name: 'resheader',
 };
 
 export const BLACK_LIST = {
@@ -17,6 +24,13 @@ export const BLACK_LIST = {
   label: '黑名单',
   icon: 'List',
   name: 'blacklist',
+};
+
+export const RECORDER = {
+  path: '/recorder',
+  label: '请求录制',
+  icon: 'VideoPlay',
+  name: 'recorder',
 };
 
 export const MOCK_DETAIL = {

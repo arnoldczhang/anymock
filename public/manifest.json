@@ -2,14 +2,19 @@
   "name": "AnyMock",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "mock mock",
+  "description": "mock & management",
   "permissions": [
     "storage",
-    "cookies",
+    "tabs",
     "clipboardRead",
     "clipboardWrite",
     "unlimitedStorage"
   ],
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
   "host_permissions": [
     "*://*/*"
   ],

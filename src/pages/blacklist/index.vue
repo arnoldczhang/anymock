@@ -31,12 +31,30 @@
       </template>
     </main>
     <footer class="footer">
-      <el-button type="primary" @click="handleAdd">新增黑名单</el-button>
-      <el-button v-if="list.length" type="success" @click="handleSave">
+      <el-button
+        v-if="list.length"
+        size="small"
+        type="success"
+        @click="handleSave"
+      >
         保存
       </el-button>
-      <el-button type="danger" @click="($event) => handleDelete()">
-        清空
+      <el-button
+        type="danger"
+        size="small"
+        :tabindex="-1"
+        @click="($event) => handleDelete()"
+      >
+        清空黑名单
+      </el-button>
+      <el-button
+        type="primary"
+        size="small"
+        class="mr8"
+        :tabindex="-1"
+        @click="handleAdd"
+      >
+        +新增黑名单
       </el-button>
     </footer>
   </article>
@@ -45,10 +63,10 @@
 import { ElMessage as Message } from 'element-plus';
 import { Ref } from 'vue';
 import { Url } from '@/types/mock.d';
-import { getStorage, setStorage } from '@/utils/storage';
 import { genBlackListItem } from '@/utils';
 import { getCurrentUrl } from '@/utils/message';
-import { BLACKLIST_KEY } from '@/const/storageKey';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import api from '@/service';
 
 const list: Ref<Url[]> = ref([]);
 
@@ -58,11 +76,8 @@ const handleAdd = async () => {
 };
 
 const handleSave = async () => {
-  await setStorage(BLACKLIST_KEY, toRaw(list.value));
-  Message({
-    type: 'success',
-    message: '操作成功，请刷新页面',
-  });
+  await api.blacklist.update(toRaw(list.value));
+  Message.success('操作成功，请刷新页面');
 };
 
 const handleCopy = async (index: number) => {
@@ -78,9 +93,12 @@ const handleDelete = async (index?: number) => {
   await handleSave();
 };
 
-onMounted(async () => {
-  list.value = await getStorage(BLACKLIST_KEY, []);
-});
+const init = async () => {
+  list.value = await api.blacklist.get([]);
+};
+
+onMounted(init);
+useTabActiveListener(init);
 </script>
 <style scoped lang="less">
 .container {
@@ -88,10 +106,12 @@ onMounted(async () => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  &:extend(.border-box);
   &__body {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 86px);
     padding: 16px;
     overflow-y: auto;
+    margin-bottom: 8px;
     &--empty {
       height: 100%;
     }
@@ -109,6 +129,7 @@ onMounted(async () => {
     }
   }
   .footer {
+    border-top: 1px solid @border;
     display: flex;
     justify-content: end;
     padding: 10px 0;
