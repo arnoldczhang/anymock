@@ -7,6 +7,7 @@
           <section
             v-for="(item, index) in list"
             class="url__item"
+            :class="{ selected: item.id === currentId }"
             :key="item.url + index"
           >
             <span class="url__item--left">
@@ -55,6 +56,7 @@ import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const store = useLogStore();
 const { logs, state } = storeToRefs(store);
+const currentId = ref('');
 const jsonstr = ref('');
 const recording = ref(false);
 const groupId = ref('');
@@ -80,6 +82,7 @@ const handleAddMock = async (log: Log) => {
 const handleView = (log: Log) => {
   try {
     jsonstr.value = JSON.stringify(JSON.parse(log.response), null, 2);
+    currentId.value = log.id as string;
   } catch (err) {
     jsonstr.value = '{}';
   }
@@ -146,6 +149,7 @@ useTabActiveListener(init);
           display: flex;
           justify-content: end;
         }
+        &.selected,
         &:hover {
           background-color: #f4f4f5;
         }
