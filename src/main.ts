@@ -4,7 +4,7 @@ import { createPinia } from 'pinia';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import 'element-plus/dist/index.css';
 import type { MessageType, Log } from '@/types/mock.d';
-import { runtime } from '@/utils/message';
+import { runtime, tab } from '@/utils/message';
 import useLogStore from '@/store/log';
 import './ui/style.less';
 import router from './router';
@@ -14,9 +14,15 @@ import EVENT from './const/event';
 
 /**
  * 初始化监听
+ *
+ * - 监听devtool消息
+ * - 监听录制消息
+ * - 重置录制状态
+ *
  */
 const initListener = () => {
   const logStore = useLogStore();
+  tab.send({ type: EVENT.record_state, data: '' });
   runtime.listen((message: MessageType) => {
     const { type, data } = message;
     switch (type) {

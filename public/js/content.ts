@@ -196,11 +196,12 @@ const checkIfAppendScript = () => {
     const inBlacklist = blacklist.some(
       ({ url }) => href === url || href.indexOf(url) > -1
     );
-    if (inBlacklist) return;
+    // 黑名单和非录制状态，不植入脚本
+    if (inBlacklist && !recording) return;
     appendScript();
-    initListener();
   });
 };
 
 watchVisibility();
 checkIfAppendScript();
+initListener();

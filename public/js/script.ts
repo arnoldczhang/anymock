@@ -230,12 +230,11 @@ const initXhook = () => {
   });
 
   xhook.after((request, response) => {
-    // 黑名单内，直接返回
-    if (inBlacklist) return;
     proxyResponseHeader(response);
     const { url } = request;
-    // 已经mock的接口就不录进去了
-    if (isMocked({ url })) return;
+    // 已经mock的接口，且非在黑名单内就不录进去了
+    // 黑名单场景其实希望都录进去
+    if (isMocked({ url }) && !inBlacklist) return;
     recordResponse(request, response);
   });
 };

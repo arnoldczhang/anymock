@@ -136,4 +136,6 @@ export type Log = {
   id?: string;
   url: string;
   response: string;
+  // 标记是否已被添加
+  used?: boolean;
 };

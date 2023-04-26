@@ -14,8 +14,12 @@
               <TextOverflow :content="item.url" @click="handleView(item)" />
             </span>
             <span class="url__item--right">
+              <el-link v-if="item.used" class="mr8" type="info" disabled>
+                已添加
+              </el-link>
               <el-link
-                class="mr16"
+                v-else
+                class="mr8"
                 type="success"
                 :underline="false"
                 @click="handleAddMock(item)"
@@ -26,11 +30,20 @@
           </section>
         </section>
         <section class="container__body--right">
-          <JsonEditor v-model="jsonstr" />
+          <el-input class="editor__name" v-model="mockName">
+            <template #prepend>接口名</template>
+          </el-input>
+          <JsonEditor
+            v-model="jsonstr"
+            :style="{ height: 'calc(100% - 48px)' }"
+          />
         </section>
       </template>
     </main>
     <footer class="footer">
+      <el-button type="danger" size="small" @click="handleClear">
+        清空日志
+      </el-button>
       <el-button
         :type="recording ? 'warning' : 'success'"
         size="small"
@@ -57,10 +70,13 @@ import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 const store = useLogStore();
 const { logs, state } = storeToRefs(store);
 const currentId = ref('');
-const jsonstr = ref('');
 const recording = ref(false);
 const groupId = ref('');
 const list = computed(() => logs.value);
+// 需新增的mock值
+const jsonstr = ref('');
+// 需新增的mock名
+const mockName = ref('');
 
 const { handleAddMockFromLog } = useTableData(computed(() => groupId.value));
 
@@ -70,21 +86,31 @@ const handleRecord = async () => {
 
 const handleAddMock = async (log: Log) => {
   try {
-    const { url } = log;
     const data = JSON.parse(jsonstr.value);
-    handleAddMockFromLog(url, data);
+    if (!mockName.value) return Message.error('请填写接口名');
+    handleAddMockFromLog(mockName.value, data);
     Message.success('添加成功');
+    log.used = true;
   } catch (err) {
     Message.error('json数据解析失败');
   }
 };
 
+const handleClear = () => {
+  store.clear();
+};
+
 const handleView = (log: Log) => {
   try {
+    const { url } = log;
+    const { pathname } = new URL(url);
+    // 记录pathname比较合理，url完全匹配比较难
+    mockName.value = pathname;
     jsonstr.value = JSON.stringify(JSON.parse(log.response), null, 2);
-    currentId.value = log.id as string;
   } catch (err) {
-    jsonstr.value = '{}';
+    jsonstr.value = '返回内容非json，无法解析';
+  } finally {
+    currentId.value = log.id as string;
   }
 };
 
@@ -98,11 +124,12 @@ watch(() => state.value, init);
 watch(
   () => recording.value,
   async (on: boolean) => {
-    tab.send({ type: EVENT.record_state, data: on });
-    if (on) {
-      store.clear();
-      reloadCurrentTab();
-    }
+    tab.send({ type: EVENT.record_state, data: on }, () => {
+      if (on) {
+        store.clear();
+        reloadCurrentTab();
+      }
+    });
   }
 );
 
@@ -145,6 +172,7 @@ useTabActiveListener(init);
           width: 80%;
         }
         &--right {
+          box-sizing: border-box;
           width: 20%;
           display: flex;
           justify-content: end;
@@ -161,6 +189,14 @@ useTabActiveListener(init);
     }
     &--right {
       width: 40%;
+      box-sizing: border-box;
+      padding-left: 4px;
+      .editor {
+        &__name {
+          margin-top: 8px;
+          margin-bottom: 8px;
+        }
+      }
     }
   }
   .sys-icon-add-box-fill {
