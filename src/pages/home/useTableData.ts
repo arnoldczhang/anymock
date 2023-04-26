@@ -37,7 +37,7 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     const mock = genMockInterface(groupId.value, name);
     mock.tags = [genTag(originData, data)];
     tableData.value.push(mock);
-    await handleSave();
+    await handlePureSave();
   };
 
   const handleStateChange = async (data: MockItem) => {
@@ -57,12 +57,13 @@ export const useTableData = (groupId: ComputedRef<string>) => {
     await handleSave();
   };
 
-  const handleSave = async () => {
+  const handlePureSave = async () => {
     await api.mock.updateList(toRaw(tableData.value), groupId.value);
-    Message({
-      type: 'success',
-      message: '保存成功',
-    });
+  };
+
+  const handleSave = async () => {
+    await handlePureSave();
+    Message.success('保存成功');
   };
 
   const handleDeleteAllMock = async () => {

@@ -39,10 +39,21 @@
       >
         保存
       </el-button>
-      <el-button type="danger" size="small" @click="($event) => handleDelete()">
+      <el-button
+        type="danger"
+        size="small"
+        :tabindex="-1"
+        @click="($event) => handleDelete()"
+      >
         清空黑名单
       </el-button>
-      <el-button type="primary" size="small" class="mr8" @click="handleAdd">
+      <el-button
+        type="primary"
+        size="small"
+        class="mr8"
+        :tabindex="-1"
+        @click="handleAdd"
+      >
         +新增黑名单
       </el-button>
     </footer>

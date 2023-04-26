@@ -38,10 +38,20 @@
       </el-table-column>
       <el-table-column prop="operation" label="操作">
         <template #default="{ row }">
-          <el-button type="success" size="small" @click="handleGoDetail(row)">
+          <el-button
+            type="success"
+            size="small"
+            :tabindex="-1"
+            @click="handleGoDetail(row)"
+          >
             编辑
           </el-button>
-          <el-button type="danger" size="small" @click="handleDeleteMock(row)">
+          <el-button
+            type="danger"
+            size="small"
+            :tabindex="-1"
+            @click="handleDeleteMock(row)"
+          >
             删除
           </el-button>
         </template>

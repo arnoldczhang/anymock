@@ -19,6 +19,7 @@
         </span>
         <el-dropdown
           split-button
+          :tabindex="-1"
           size="small"
           type="primary"
           @click="openEditGroupNameDialog"
@@ -47,6 +48,7 @@
           class="btn"
           type="danger"
           size="small"
+          :tabindex="-1"
           @click="mockTableRef?.handleDeleteAllMock?.()"
         >
           清空mock
@@ -55,6 +57,7 @@
           class="btn mr8"
           type="primary"
           size="small"
+          :tabindex="-1"
           @click="mockTableRef?.handleAddMock?.()"
         >
           +新增mock

@@ -24,7 +24,7 @@
                 :underline="false"
                 @click="handleAddMock(item)"
               >
-                添加到mock
+                +添加mock
               </el-link>
             </span>
           </section>
@@ -41,13 +41,14 @@
       </template>
     </main>
     <footer class="footer">
-      <el-button type="danger" size="small" @click="handleClear">
+      <el-button type="danger" size="small" :tabindex="-1" @click="handleClear">
         清空日志
       </el-button>
       <el-button
         :type="recording ? 'warning' : 'success'"
         size="small"
         class="mr8"
+        :tabindex="-1"
         :icon="recording ? VideoPause : VideoPlay"
         @click="handleRecord"
       >
@@ -87,9 +88,11 @@ const handleRecord = async () => {
 const handleAddMock = async (log: Log) => {
   try {
     const data = JSON.parse(jsonstr.value);
-    if (!mockName.value) return Message.error('请填写接口名');
-    handleAddMockFromLog(mockName.value, data);
-    Message.success('添加成功');
+    const { url } = log;
+    const { pathname } = new URL(url);
+    const name = mockName.value || pathname;
+    handleAddMockFromLog(name, data);
+    Message.success(`接口：${name} 添加成功`);
     log.used = true;
   } catch (err) {
     Message.error('json数据解析失败');
@@ -149,7 +152,7 @@ useTabActiveListener(init);
   &:extend(.border-box);
   &__body {
     display: flex;
-    height: calc(100vh - 86px);
+    height: calc(100vh - 77px);
     overflow-y: auto;
     &--empty {
       height: 100%;

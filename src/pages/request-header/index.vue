@@ -65,11 +65,17 @@
             <el-button
               type="primary"
               size="small"
+              :tabindex="-1"
               @click="handleAddHeaderParam"
             >
               +新增头字段
             </el-button>
-            <el-button type="success" size="small" @click="handleSave">
+            <el-button
+              type="success"
+              size="small"
+              :tabindex="-1"
+              @click="handleSave"
+            >
               保存
             </el-button>
           </span>
@@ -91,6 +97,7 @@
               type="danger"
               :icon="Delete"
               class="param__box--delete"
+              :tabindex="-1"
               @click="handleDeleteParam(index)"
             />
           </p>
