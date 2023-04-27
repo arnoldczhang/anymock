@@ -29,7 +29,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['sonarjs'],
+  plugins: ['sonarjs', 'simple-import-sort'],
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
@@ -39,6 +39,8 @@ module.exports = {
     './.eslintrc-auto-import.json',
   ],
   rules: {
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     semi: 'error',
     'no-trailing-spaces': 'error',

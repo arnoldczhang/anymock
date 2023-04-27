@@ -25,6 +25,7 @@ specifiers:
   eslint: ^7.32.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
+  eslint-plugin-simple-import-sort: 8.0.0
   eslint-plugin-sonarjs: ^0.6.0
   eslint-plugin-vue: ^7.19.1
   less: ^4.1.3
@@ -79,6 +80,7 @@ devDependencies:
   eslint: 7.32.0
   eslint-config-prettier: 8.5.0_eslint@7.32.0
   eslint-plugin-prettier: 4.2.1_dahtpppq36lfxlzgj6op46svee
+  eslint-plugin-simple-import-sort: 8.0.0_eslint@7.32.0
   eslint-plugin-sonarjs: 0.6.0_eslint@7.32.0
   eslint-plugin-vue: 7.20.0_eslint@7.32.0
   less: 4.1.3
@@ -2280,6 +2282,14 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
+    dependencies:
+      eslint: 7.32.0
+    dev: true
+
+  /eslint-plugin-simple-import-sort/8.0.0_eslint@7.32.0:
+    resolution: {integrity: sha512-bXgJQ+lqhtQBCuWY/FUWdB27j4+lqcvXv5rUARkzbeWLwea+S5eBZEQrhnO+WgX3ZoJHVj0cn943iyXwByHHQw==}
+    peerDependencies:
+      eslint: '>=5.0.0'
     dependencies:
       eslint: 7.32.0
     dev: true

@@ -107,14 +107,15 @@
   </main>
 </template>
 <script lang="ts" setup>
-import { Ref } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
 import { ElMessage as Message } from 'element-plus';
-import { ReqHeaderList, ReqHeaderItem } from '@/types/mock';
-import { genDefaultReqHeader } from '@/utils';
-import useCommonStore from '@/store/common';
-import { api } from '@/service';
+import { Ref } from 'vue';
+
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import { api } from '@/service';
+import useCommonStore from '@/store/common';
+import { ReqHeaderItem, ReqHeaderList } from '@/types/mock';
+import { genDefaultReqHeader } from '@/utils';
 
 const list: Ref<ReqHeaderList> = ref([]);
 const currentConfig: Ref<ReqHeaderItem | null> = ref(null);
