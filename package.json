@@ -7,7 +7,7 @@
     "start": "vite --host",
     "dev": "vite",
     "clear": "rm -f dist/js/*.ts",
-    "build:script": "esbuild ./public/js/script.ts ./public/js/content.ts ./public/js/devtools.ts --bundle --target=chrome111 --minify --sourcemap --format=iife --outdir=dist/js/ && pnpm clear",
+    "build:script": "esbuild ./public/js/script.ts ./public/js/content.ts ./public/js/devtools.ts --bundle --target=chrome111 --minify --format=iife --outdir=dist/js/ && pnpm clear",
     "compile": "node ./compile-theme.cjs",
     "build": "vue-tsc --noEmit && vite build && pnpm build:script",
     "preview": "vite preview"

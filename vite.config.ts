@@ -37,7 +37,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          element: ['element-plus', '@element-plus/icons-vue'],
+          // element: ['element-plus', '@element-plus/icons-vue'],
         },
       },
     },
