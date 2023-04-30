@@ -1,16 +1,18 @@
-import * as Mock from 'mockjs';
 import cloneDeep from 'lodash/cloneDeep';
+import * as Mock from 'mockjs';
+
 import {
-  Tree,
-  RequestInfo,
-  TreeData,
-  MockType,
+  Json,
   MockItem,
   MockParam,
-  Json,
+  MockType,
+  RequestInfo,
+  Tree,
+  TreeData,
 } from '@/types/mock.d';
-import { isObj, isNum, getType, genDefaultTreeData } from './index';
+
 import { mockKey, mockKeyMap } from '../const/selection';
+import { genDefaultTreeData, getType, isNum, isObj } from './index';
 
 const noop = <T = unknown>(v: T) => v;
 
@@ -123,6 +125,7 @@ export const toMock = (mock: MockType, param?: MockParam) => {
 
 /**
  * 解析纯对象
+ *
  * @param rules
  * @param data
  * @param result
@@ -181,6 +184,7 @@ export const parseObject = (
 
 /**
  * 解析数组
+ *
  * @param rules
  * @param data
  * @param current
@@ -195,12 +199,13 @@ export const parseArray = (
 ) => {
   const { length = 0, lengthMock, value = [] } = current || {};
   const finalLength = getLength(lengthMock, length);
+  const [exampleData] = value;
 
   // 超出原始数据长度，默认填充第一个数据
   if (finalLength > data.length) {
     let remain = finalLength - data.length;
     while (remain--) {
-      data.push(cloneDeep(value[0]));
+      data.push(cloneDeep(exampleData));
     }
   } else {
     data.length = finalLength;
@@ -237,6 +242,11 @@ export const parseArray = (
 
   // 纯对象
   data.forEach((val, index) => {
+    // fix: 数组中第一个元素是对象，后面如果有元素非对象会报错，这里兜底下
+    if (!isObj(val)) {
+      val = cloneDeep(exampleData);
+      data[index] = val;
+    }
     parseObject(rules, val, result.concat(val), !index);
   });
 };

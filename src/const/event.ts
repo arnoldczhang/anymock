@@ -14,6 +14,8 @@ const EVENT = {
   record_state: 'record-state',
   // mock面板关闭/隐藏时
   inactive: 'inactive',
+  // 纯打印日志
+  log: 'log',
 };
 
 export default EVENT;

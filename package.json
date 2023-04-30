@@ -2,13 +2,15 @@
   "name": "anymock",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start": "vite --host",
     "dev": "vite",
     "clear": "rm -f dist/js/*.ts",
     "build:script": "esbuild ./public/js/script.ts ./public/js/content.ts ./public/js/devtools.ts --bundle --target=chrome111 --minify --format=iife --outdir=dist/js/ && pnpm clear",
+    "build:script:dev": "esbuild ./public/js/script.ts ./public/js/content.ts ./public/js/devtools.ts --bundle --target=chrome111 --sourcemap --minify --format=iife --outdir=dist/js/ && pnpm clear",
     "compile": "node ./compile-theme.cjs",
+    "build:dev": "vue-tsc --noEmit && vite build && pnpm build:script:dev",
     "build": "vue-tsc --noEmit && vite build && pnpm build:script",
     "preview": "vite preview"
   },

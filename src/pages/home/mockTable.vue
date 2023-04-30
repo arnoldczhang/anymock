@@ -1,7 +1,12 @@
 <template>
   <article class="table">
     <el-table :data="searchTableData" v-bind="tableProps">
-      <el-table-column prop="name" label="接口" show-overflow-tooltip>
+      <el-table-column
+        prop="name"
+        label="接口"
+        width="320"
+        show-overflow-tooltip
+      >
         <template #header>
           <header class="header--name">
             <span>接口</span>
@@ -61,8 +66,10 @@
 </template>
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
-import type { MockItem } from '@/types/mock';
+
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import type { MockItem } from '@/types/mock';
+
 import { useTableData } from './useTableData';
 
 const props = withDefaults(

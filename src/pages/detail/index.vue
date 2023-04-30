@@ -58,7 +58,9 @@
               @confirm="(val: string) => handleUpdateTagName(tag, val)"
             />
             <span class="card__title--right">
-              <!-- <el-link :underline="false" @click="handleLog(index)">样例log</el-link> -->
+              <el-button link size="small" @click="handleLog(index)">
+                打印样例
+              </el-button>
               <el-button
                 class="ml8"
                 size="small"
@@ -183,32 +185,36 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ElTree as Tree, ElMessage as Message } from 'element-plus';
+import { ElMessage as Message, ElTree as Tree } from 'element-plus';
 import type Node from 'element-plus/lib/components/tree/src/model/node.d';
-import { v4 as uuid } from 'uuid';
 import cloneDeep from 'lodash/cloneDeep';
+import { v4 as uuid } from 'uuid';
+
+import { STATUS } from '@/const';
+import EVENT from '@/const/event';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import { Json, MockItem, Tag, TreeData } from '@/types/mock.d';
 import {
-  isObj,
-  transfromJson2TreeData,
+  copy,
   genCaseName,
   genCaseNameCn,
   genTreeData,
+  isObj,
+  transfromJson2TreeData,
   validateTag,
-  copy,
 } from '@/utils/index';
+import { tab } from '@/utils/message';
 import {
-  parseResponse,
+  getLengthMockText,
   getMockText,
   parseOriginData,
-  getLengthMockText,
+  parseResponse,
 } from '@/utils/mock';
-import { MockItem, Tag, TreeData, Json } from '@/types/mock.d';
-import { STATUS } from '@/const';
-import ImportDialog from './components/import-dialog.vue';
+
 import AddDialog from './components/add-dialog.vue';
+import ImportDialog from './components/import-dialog.vue';
 import TreeEditDrawer from './components/tree-edit-drawer.vue';
 import { useMockItemData } from './useMockItemData';
-import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const route = useRoute();
 const router = useRouter();
@@ -440,7 +446,16 @@ const handleDeleteNode = async () => {
  * @param index
  */
 const handleLog = (index: number) => {
-  console.log(parseResponse(mockItem.value.tags[index].data, mockItem.value));
+  let result;
+  try {
+    result = parseResponse(mockItem.value.tags[index].data, mockItem.value);
+    Message.success('打印成功');
+  } catch ({ message, stack }) {
+    result = { message, stack };
+    Message.error('样例生成失败，请查看原因');
+  } finally {
+    tab.send({ type: EVENT.log, data: result });
+  }
 };
 
 /**
