@@ -8,7 +8,7 @@
       <el-menu
         v-if="menuVisible"
         text-color="rgb(126, 129, 142)"
-        active-text-color="#ffd04b"
+        active-text-color="#e6a23c"
         :background-color="sidbarColor"
         class="container__aside--center"
         :default-active="pageName"
@@ -24,8 +24,9 @@
           <c-icon :icon="item.icon" />
           <span class="mr8">{{ item.label }}</span>
           <el-tag
-            v-if="showReqHeaderTip(item)"
+            v-if="showHeaderTip(item)"
             round
+            size="small"
             type="danger"
             effect="light"
           >
@@ -66,20 +67,21 @@
   </main>
 </template>
 <script setup lang="ts">
-import { Upload, Download } from '@element-plus/icons-vue';
+import { Download, Upload } from '@element-plus/icons-vue';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
-import { getCurrentStorage } from '@/utils/storage';
-import { copy } from '@/utils/index';
-import useCommonStore from '@/store/common';
-import api from '@/service';
-import ImportDialog from './pages/detail/components/import-dialog.vue';
+
 import {
+  BLACK_LIST,
   HOME,
+  RECORDER,
   REQ_HEADER,
   RES_HEADER,
-  RECORDER,
-  BLACK_LIST,
 } from '@/const/router';
+import api from '@/service';
+import useCommonStore from '@/store/common';
+import { copy } from '@/utils/index';
+import { getCurrentStorage } from '@/utils/storage';
+
 import {
   BLACKLIST_KEY,
   CURRENT_GROUP_ID_KEY,
@@ -88,6 +90,7 @@ import {
   REQ_HEADER_KEY,
   RES_HEADER_KEY,
 } from './const/storageKey';
+import ImportDialog from './pages/detail/components/import-dialog.vue';
 
 const routeList = [HOME, REQ_HEADER, RES_HEADER, RECORDER, BLACK_LIST];
 const store = useCommonStore();
@@ -106,7 +109,7 @@ const handleSelect = (name: string) => {
   router.push({ name });
 };
 
-const showReqHeaderTip = (route: typeof REQ_HEADER) => {
+const showHeaderTip = (route: typeof REQ_HEADER) => {
   if (route.name === REQ_HEADER.name) return store.hasReqHeaderProxy;
   if (route.name === RES_HEADER.name) return store.hasResHeaderProxy;
   return false;
