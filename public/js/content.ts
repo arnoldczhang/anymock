@@ -159,7 +159,7 @@ const initListener = () => {
         updateState(data);
         break;
       case EVENT.log:
-        logger.log(data);
+        logger.log('样例：', data);
         break;
       default:
         break;
