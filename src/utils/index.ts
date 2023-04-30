@@ -1,13 +1,14 @@
 import { v4 as uuid } from 'uuid';
+
 import { STATUS } from '@/const/index';
 import {
-  Tag,
-  MockItem,
-  Type,
-  TreeData,
-  Tree,
-  ReqHeaderItem,
   Json,
+  MockItem,
+  ReqHeaderItem,
+  Tag,
+  Tree,
+  TreeData,
+  Type,
 } from '@/types/mock.d';
 
 /**
@@ -271,5 +272,20 @@ export const validateTag = (tag: Tag, others?: Tag[]) => {
     if (ids.includes(tag.id)) {
       throw new Error(`id：${tag.id} 重复了，手动改下吧`);
     }
+  }
+};
+
+/**
+ * 获取 location.pathname
+ *
+ * @param url
+ * @returns
+ */
+export const getPathName = (url: string) => {
+  try {
+    const { pathname } = new URL(url);
+    return pathname;
+  } catch (err) {
+    return url;
   }
 };

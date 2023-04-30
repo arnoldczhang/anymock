@@ -58,15 +58,17 @@
   </article>
 </template>
 <script setup lang="ts">
-import { ElMessage as Message } from 'element-plus';
 import { VideoPause, VideoPlay } from '@element-plus/icons-vue';
+import { ElMessage as Message } from 'element-plus';
+
+import EVENT from '@/const/event';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import { useTableData } from '@/pages/home/useTableData';
+import api from '@/service';
 import useLogStore from '@/store/log';
 import type { Log } from '@/types/mock.d';
+import { getPathName } from '@/utils';
 import { reloadCurrentTab, tab } from '@/utils/message';
-import EVENT from '@/const/event';
-import api from '@/service';
-import { useTableData } from '@/pages/home/useTableData';
-import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const store = useLogStore();
 const { logs, state } = storeToRefs(store);
@@ -88,9 +90,7 @@ const handleRecord = async () => {
 const handleAddMock = async (log: Log) => {
   try {
     const data = JSON.parse(jsonstr.value);
-    const { url } = log;
-    const { pathname } = new URL(url);
-    const name = mockName.value || pathname;
+    const name = mockName.value || getPathName(log.url);
     handleAddMockFromLog(name, data);
     Message.success(`接口：${name} 添加成功`);
     log.used = true;
@@ -106,9 +106,8 @@ const handleClear = () => {
 const handleView = (log: Log) => {
   try {
     const { url } = log;
-    const { pathname } = new URL(url);
     // 记录pathname比较合理，url完全匹配比较难
-    mockName.value = pathname;
+    mockName.value = getPathName(url);
     jsonstr.value = JSON.stringify(JSON.parse(log.response), null, 2);
   } catch (err) {
     jsonstr.value = '返回内容非json，无法解析';
