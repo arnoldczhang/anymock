@@ -1,5 +1,6 @@
-import { v4 as uuid } from 'uuid';
 import { defineStore } from 'pinia';
+import { v4 as uuid } from 'uuid';
+
 import type { Log } from '@/types/mock.d';
 import type { LogState } from '@/types/store.d';
 

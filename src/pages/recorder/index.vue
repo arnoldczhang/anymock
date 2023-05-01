@@ -7,7 +7,7 @@
           <section
             v-for="(item, index) in list"
             class="url__item"
-            :class="{ selected: item.id === currentId }"
+            :class="{ selected: item.id === currentMock.id }"
             :key="item.url + index"
           >
             <span class="url__item--left">
@@ -30,11 +30,11 @@
           </section>
         </section>
         <section class="container__body--right">
-          <el-input class="editor__name" v-model="mockName">
+          <el-input class="editor__name" v-model="currentMock.url">
             <template #prepend>接口名</template>
           </el-input>
           <JsonEditor
-            v-model="jsonstr"
+            v-model="currentMock.response"
             :style="{ height: 'calc(100% - 48px)' }"
           />
         </section>
@@ -72,14 +72,13 @@ import { reloadCurrentTab, tab } from '@/utils/message';
 
 const store = useLogStore();
 const { logs, state } = storeToRefs(store);
-const currentId = ref('');
 const recording = ref(false);
 const groupId = ref('');
 const list = computed(() => logs.value);
-// 需新增的mock值
-const jsonstr = ref('');
-// 需新增的mock名
-const mockName = ref('');
+/**
+ * 需新增的mock信息
+ */
+const currentMock = ref<Partial<Log>>({});
 
 const { handleAddMockFromLog } = useTableData(computed(() => groupId.value));
 
@@ -89,8 +88,15 @@ const handleRecord = async () => {
 
 const handleAddMock = async (log: Log) => {
   try {
-    const data = JSON.parse(jsonstr.value);
-    const name = mockName.value || getPathName(log.url);
+    let data = {};
+    let name = '';
+    if (currentMock.value.id === log.id) {
+      name = currentMock.value.url || getPathName(log.url);
+      data = JSON.parse(currentMock.value.response as string);
+    } else {
+      name = getPathName(log.url);
+      data = JSON.parse(log.response);
+    }
     handleAddMockFromLog(name, data);
     Message.success(`接口：${name} 添加成功`);
     log.used = true;
@@ -105,14 +111,17 @@ const handleClear = () => {
 
 const handleView = (log: Log) => {
   try {
-    const { url } = log;
     // 记录pathname比较合理，url完全匹配比较难
-    mockName.value = getPathName(url);
-    jsonstr.value = JSON.stringify(JSON.parse(log.response), null, 2);
+    currentMock.value.url = getPathName(log.url);
+    currentMock.value.response = JSON.stringify(
+      JSON.parse(log.response),
+      null,
+      2
+    );
   } catch (err) {
-    jsonstr.value = '返回内容非json，无法解析';
+    currentMock.value.response = '返回内容非json，无法解析';
   } finally {
-    currentId.value = log.id as string;
+    currentMock.value.id = log.id as string;
   }
 };
 
