@@ -43,12 +43,7 @@
             class="w320"
             v-model="model.value"
           />
-          <el-input-number
-            v-if="number"
-            class="w320"
-            v-model="model.value"
-            :controls="false"
-          />
+          <el-input-number v-if="number" class="w320" v-model="model.value" />
           <el-switch v-if="boolean" v-model="model.value" />
         </el-form-item>
         <el-form-item
@@ -78,7 +73,7 @@
             class="slider--lengthmock"
             range
             :marks="marks"
-            :max="100"
+            :max="200"
           />
         </el-form-item>
         <el-form-item v-if="notObj" prop="mock" label="mock：">
@@ -163,20 +158,21 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { Ref } from 'vue';
-import * as Mock from 'mockjs';
-import { ElMessageBox as MessageBox, ElForm as Form } from 'element-plus';
-import cloneDeep from 'lodash/cloneDeep';
+import { ElForm as Form, ElMessageBox as MessageBox } from 'element-plus';
 import type Node from 'element-plus/lib/components/tree/src/model/node.d';
-import { genAllData, genTreeData, genArrayDefaultData } from '@/utils/index';
-import { TreeData } from '@/types/mock';
+import cloneDeep from 'lodash/cloneDeep';
+import * as Mock from 'mockjs';
+import { Ref } from 'vue';
+
 import {
-  mockKey,
-  mockSelection,
-  mockLengthSelection,
   mockFnSelection,
+  mockKey,
+  mockLengthSelection,
+  mockSelection,
   typeSelection,
 } from '@/const/selection';
+import { TreeData } from '@/types/mock';
+import { genAllData, genArrayDefaultData, genTreeData } from '@/utils/index';
 
 const uniqValidator = (rule: any, value: string, callback: Function) => {
   if (!arrayItem.value && !value) {
@@ -200,13 +196,20 @@ const tempMock = ref('');
 const tempMockCustom = ref('');
 // 长度mock
 const tempLengthMock = ref<[string, [number, number]]>(['', [0, 0]]);
-const marks = ref({ 0: '0', 50: '50', 90: '90' });
 // 随机指定mock值
 const tempMockRest: Ref<Array<string | number>> = ref([]);
 const rules = ref({
   label: [{ validator: uniqValidator, trigger: 'blur' }],
 });
 
+// 间断点
+const marks = computed(() => {
+  const steps = [0, 25, 50, 75, 100, 125, 150, 175];
+  return steps.reduce((res, pre) => {
+    res[pre] = String(pre);
+    return res;
+  }, {} as Record<string, any>);
+});
 // 随机mock指定值
 const randomOne = computed(
   () => notObj.value && mockKey.randomOne === tempMock.value
