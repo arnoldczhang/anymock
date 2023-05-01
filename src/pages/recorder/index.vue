@@ -41,7 +41,13 @@
       </template>
     </main>
     <footer class="footer">
-      <el-button type="danger" size="small" :tabindex="-1" @click="handleClear">
+      <el-button
+        v-if="list.length"
+        type="danger"
+        size="small"
+        :tabindex="-1"
+        @click="handleClear"
+      >
         清空日志
       </el-button>
       <el-button

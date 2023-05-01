@@ -12,14 +12,6 @@
             <template #prepend>{{ index + 1 }}</template>
           </el-input>
           <el-button
-            type="danger"
-            size="small"
-            class="ml8 link--copy"
-            @click="handleDelete(index)"
-          >
-            删除
-          </el-button>
-          <el-button
             type="primary"
             size="small"
             class="ml8 link--copy"
@@ -27,34 +19,37 @@
           >
             复制当前
           </el-button>
+          <el-button
+            type="danger"
+            size="small"
+            class="ml8 link--copy"
+            @click="handleDelete(index)"
+          >
+            删除
+          </el-button>
         </section>
       </template>
     </main>
     <footer class="footer">
       <el-button
-        v-if="list.length"
-        size="small"
-        type="success"
-        @click="handleSave"
-      >
-        保存
-      </el-button>
-      <el-button
         type="danger"
         size="small"
         :tabindex="-1"
-        @click="($event) => handleDelete()"
+        @click="() => handleDelete()"
       >
         清空黑名单
       </el-button>
-      <el-button
-        type="primary"
-        size="small"
-        class="mr8"
-        :tabindex="-1"
-        @click="handleAdd"
-      >
+      <el-button type="primary" size="small" :tabindex="-1" @click="handleAdd">
         +新增黑名单
+      </el-button>
+      <el-button
+        v-if="list.length"
+        size="small"
+        type="success"
+        class="mr8"
+        @click="handleSave"
+      >
+        保存
       </el-button>
     </footer>
   </article>
@@ -62,11 +57,12 @@
 <script setup lang="ts">
 import { ElMessage as Message } from 'element-plus';
 import { Ref } from 'vue';
+
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import api from '@/service';
 import { Url } from '@/types/mock.d';
 import { genBlackListItem } from '@/utils';
 import { getCurrentUrl } from '@/utils/message';
-import { useTabActiveListener } from '@/hooks/useTabActiveListener';
-import api from '@/service';
 
 const list: Ref<Url[]> = ref([]);
 
