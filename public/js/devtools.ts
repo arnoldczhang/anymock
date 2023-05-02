@@ -1,5 +1,5 @@
 import EVENT from '../../src/const/event';
-import { tab, runtime } from '../../src/utils/message';
+import { runtime, tab } from '../../src/utils/message';
 
 chrome.devtools.panels.create(
   'Mock',

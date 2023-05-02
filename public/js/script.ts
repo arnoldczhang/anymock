@@ -1,11 +1,13 @@
 import xhook from 'xhook';
-import type { MockItem } from '../../src/types/mock';
-import { parseResponse } from '../../src/utils/mock';
+
 import CODE from '../../src/const/code';
 import EVENT from '../../src/const/event';
+import type { MockItem } from '../../src/types/mock';
+import logger from '../../src/utils/log';
 import { page } from '../../src/utils/message';
+import { parseResponse } from '../../src/utils/mock';
 
-console.log('mock脚本植入');
+logger.log('mock脚本植入');
 
 // storage获取前请求暂存处
 const requestQueue: [Record<string, any>, Function, number][] = [];
@@ -160,7 +162,7 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
       type: 'json',
     };
 
-    console.log(`拦截了：${url}`, result);
+    logger.log(`拦截了：${url}`, result);
 
     if (delay && typeof delayMills === 'number') {
       // 精确计算延时
@@ -169,7 +171,7 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
     }
     return callback(response);
   } catch (err) {
-    console.log('mock失败', err);
+    logger.log('mock失败', err);
     return callback();
   }
 };
