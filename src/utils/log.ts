@@ -1,4 +1,4 @@
-import projectInfo from '../../package.json';
+import projectInfo from '../../public/manifest.json';
 
 const log = (...args: any[]) => {
   console.log(
