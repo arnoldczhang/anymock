@@ -3,7 +3,7 @@
     <el-empty
       v-if="globalError"
       class="container"
-      description="工具版本已更新，请重启开发者工具"
+      description="版本已更新，请重启开发者工具"
     />
     <template v-else>
       <aside class="container__aside">
