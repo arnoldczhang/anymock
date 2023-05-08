@@ -1,16 +1,19 @@
-import { createApp } from 'vue';
+import 'element-plus/dist/index.css';
+import './ui/style.less';
+
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import ElementPlus from 'element-plus';
 import { createPinia } from 'pinia';
-import * as ElementPlusIconsVue from '@element-plus/icons-vue';
-import 'element-plus/dist/index.css';
-import type { MessageType, Log } from '@/types/mock.d';
-import { runtime, tab } from '@/utils/message';
+import { createApp } from 'vue';
+
 import useLogStore from '@/store/log';
-import './ui/style.less';
-import router from './router';
+import type { Log, MessageType } from '@/types/mock.d';
+import { runtime, tab } from '@/utils/message';
+
 import App from './App.vue';
-import { registryComponents } from './install-component';
 import EVENT from './const/event';
+import { registryComponents } from './install-component';
+import router from './router';
 
 /**
  * 初始化监听
