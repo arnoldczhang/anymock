@@ -1,69 +1,76 @@
 <template>
   <main class="container">
-    <aside class="container__aside">
-      <section class="container__aside--top" @click="handleOpenLoginPage">
-        <el-avatar size="small" :src="avatar" />
-        <label class="ml8">{{ user ? `${user}` : '未登录' }}</label>
-      </section>
-      <el-menu
-        v-if="menuVisible"
-        text-color="rgb(126, 129, 142)"
-        active-text-color="#e6a23c"
-        :background-color="sidbarColor"
-        class="container__aside--center"
-        :default-active="pageName"
-        :collapse="collapse"
-        menu-trigger="click"
-        @select="handleSelect"
-      >
-        <el-menu-item
-          v-for="item in routeList"
-          :index="item.name"
-          :key="item.name"
+    <el-empty
+      v-if="globalError"
+      class="container"
+      description="工具版本已更新，请重启开发者工具"
+    />
+    <template v-else>
+      <aside class="container__aside">
+        <section class="container__aside--top" @click="handleOpenLoginPage">
+          <el-avatar size="small" :src="avatar" />
+          <label class="ml8">{{ user ? `${user}` : '未登录' }}</label>
+        </section>
+        <el-menu
+          v-if="menuVisible"
+          text-color="rgb(126, 129, 142)"
+          active-text-color="#e6a23c"
+          :background-color="sidbarColor"
+          class="container__aside--center"
+          :default-active="pageName"
+          :collapse="collapse"
+          menu-trigger="click"
+          @select="handleSelect"
         >
-          <c-icon :icon="item.icon" />
-          <span class="mr8">{{ item.label }}</span>
-          <el-tag
-            v-if="showHeaderTip(item)"
-            round
-            size="small"
-            type="danger"
-            effect="light"
+          <el-menu-item
+            v-for="item in routeList"
+            :index="item.name"
+            :key="item.name"
           >
-            生效中
-          </el-tag>
-        </el-menu-item>
-      </el-menu>
-      <section class="container__aside--bottom">
-        <el-tooltip content="将当前配置复制到剪贴板">
-          <el-link
-            :underline="false"
-            class="mr16"
-            :icon="Upload"
-            @click="handleCopyAllStorage"
-          >
-            导出
-          </el-link>
-        </el-tooltip>
-        <el-tooltip content="导入他人配置">
-          <el-link
-            :underline="false"
-            :icon="Download"
-            @click="handleOpenDialog"
-          >
-            导入
-          </el-link>
-        </el-tooltip>
-      </section>
-      <import-dialog
-        ref="importDialogRef"
-        title="同步配置"
-        @import-json="handlePasteAllStorage"
-      />
-    </aside>
-    <article class="container__content">
-      <router-view />
-    </article>
+            <c-icon :icon="item.icon" />
+            <span class="mr8">{{ item.label }}</span>
+            <el-tag
+              v-if="showHeaderTip(item)"
+              round
+              size="small"
+              type="danger"
+              effect="light"
+            >
+              生效中
+            </el-tag>
+          </el-menu-item>
+        </el-menu>
+        <section class="container__aside--bottom">
+          <el-tooltip content="将当前配置复制到剪贴板">
+            <el-link
+              :underline="false"
+              class="mr16"
+              :icon="Upload"
+              @click="handleCopyAllStorage"
+            >
+              导出
+            </el-link>
+          </el-tooltip>
+          <el-tooltip content="导入他人配置">
+            <el-link
+              :underline="false"
+              :icon="Download"
+              @click="handleOpenDialog"
+            >
+              导入
+            </el-link>
+          </el-tooltip>
+        </section>
+        <import-dialog
+          ref="importDialogRef"
+          title="同步配置"
+          @import-json="handlePasteAllStorage"
+        />
+      </aside>
+      <article class="container__content">
+        <router-view />
+      </article>
+    </template>
   </main>
 </template>
 <script setup lang="ts">
@@ -96,6 +103,7 @@ const routeList = [HOME, REQ_HEADER, RES_HEADER, RECORDER, BLACK_LIST];
 const store = useCommonStore();
 const route = useRoute();
 const router = useRouter();
+const { globalError } = storeToRefs(store);
 const pageName = ref<string>(route.name as string);
 const collapse = ref(false);
 const user = ref('');
