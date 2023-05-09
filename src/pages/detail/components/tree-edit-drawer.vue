@@ -2,7 +2,8 @@
   <el-drawer
     title="编辑原始JSON"
     v-model="visible"
-    size="90%"
+    size="87%"
+    :close-on-press-escape="false"
     :wrapperClosable="false"
     :before-close="handleClose"
     class="tree__drawer--edit"
@@ -11,18 +12,20 @@
       <section class="container__main">
         <el-tabs v-model="tab" class="container__main--inner">
           <el-tab-pane label="树型编辑" :name="TAB.tree">
-            <el-tree
-              ref="treeRef"
-              node-key="id"
-              class="tree"
-              :data="treeData"
-              draggable
-            >
+            <el-tree ref="treeRef" node-key="id" class="tree" :data="treeData">
               <template #default="{ node, data }">
                 <section class="tree__node">
                   <span class="tree__node--left">
                     <i class="sys-icon-drag" />
-                    <label class="node__label">{{ data.label }}</label>
+                    <label class="node__label" v-if="isNum(data.label)">
+                      {{ data.label }}
+                    </label>
+                    <input-view
+                      v-else
+                      :model="data.label"
+                      class="node__label--editable"
+                      @confirm="(label: string) => data.label = label"
+                    />
                     ：
                     <label
                       v-if="isObjectOrArray(data)"
@@ -72,7 +75,7 @@
             </el-tree>
           </el-tab-pane>
           <el-tab-pane label="纯json编辑" :name="TAB.json">
-            <JsonEditor v-model="jsonstr" />
+            <JsonEditor v-model="jsonstr" class="json" />
           </el-tab-pane>
         </el-tabs>
       </section>
@@ -89,13 +92,14 @@
   </el-drawer>
 </template>
 <script setup lang="ts">
-import { Ref } from 'vue';
-import { ElTree as Tree, ElMessage as Message } from 'element-plus';
-import cloneDeep from 'lodash/cloneDeep';
+import { ElMessage as Message, ElTree as Tree } from 'element-plus';
 import type Node from 'element-plus/lib/components/tree/src/model/node.d';
+import cloneDeep from 'lodash/cloneDeep';
+import { Ref } from 'vue';
+
 import { Json, TreeNode } from '@/types/mock.d';
+import { isNum, isObj } from '@/utils';
 import { transJson2Tree, transTree2Json } from '@/utils/mock';
-import { isObj, isNum } from '@/utils';
 
 const TAB = {
   tree: 'tree',
@@ -134,18 +138,6 @@ const getDataValue = ({ value, children = [] }: TreeNode) => {
   return value;
 };
 
-const handleDeleteNode = (node: Node) => {
-  node?.remove();
-};
-
-const handleCopyNode = (node: any, data: any) => {
-  treeRef.value?.insertAfter(cloneDeep(data), node);
-  Message({
-    type: 'success',
-    message: '克隆成功',
-  });
-};
-
 const getResult = () => {
   if (tab.value === TAB.tree) {
     return transTree2Json(treeData.value);
@@ -157,6 +149,18 @@ const getResult = () => {
     Message.error('json格式异常');
     throw new Error(err);
   }
+};
+
+const handleDeleteNode = (node: Node) => {
+  node?.remove();
+};
+
+const handleCopyNode = (node: any, data: any) => {
+  treeRef.value?.insertAfter(cloneDeep(data), node);
+  Message({
+    type: 'success',
+    message: '克隆成功',
+  });
 };
 
 const handleSaveAndReplace = () => {
@@ -207,10 +211,26 @@ defineExpose({ handleOpen, handleClose });
         align-items: center;
         .input--simple {
           flex: 1;
+          &.node__label {
+            flex: initial;
+          }
         }
         .node__label {
           color: #000;
           font-weight: bold;
+          &--editable {
+            :deep(.el-icon) {
+              font-size: 14px !important;
+            }
+            :deep(.el-input) {
+              width: 120px;
+            }
+            :deep(.el-input),
+            :deep(.el-input__inner) {
+              height: 20px;
+              line-height: 20px;
+            }
+          }
         }
         .node__value {
           color: #999;
@@ -251,6 +271,9 @@ defineExpose({ handleOpen, handleClose });
         border: 1px solid var(--el-border-color-light);
         height: 99%;
         width: 99%;
+      }
+      .json {
+        font-size: 14px;
       }
     }
   }
