@@ -59,7 +59,7 @@
             />
             <span class="card__title--right">
               <el-button link size="small" @click="handleLog(index)">
-                打印样例
+                打印样例&复制
               </el-button>
               <el-button
                 class="ml8"
@@ -85,6 +85,7 @@
               <el-button
                 class="ml8"
                 size="small"
+                type="success"
                 @click="handleCopyCase(index)"
               >
                 拷贝案例
@@ -283,10 +284,7 @@ const handleTransformJson = async (jsonStr: string) => {
     currentTag.value.data = treeData;
     await handleSave();
   } catch (err) {
-    Message({
-      type: 'error',
-      message: 'JSON.parse失败，请检查输入',
-    });
+    Message.error('JSON.parse失败，请检查输入');
   }
 };
 
@@ -302,10 +300,7 @@ const handleImportCase = async (jsonStr: string) => {
     mockItem.value.tags.push(tag);
     await handleSave();
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `复制失败，原因：${err.message}`,
-    });
+    Message.error(`复制失败，原因：${err.message}`);
   }
 };
 
@@ -339,15 +334,9 @@ const genNewTag = (index: number) => {
 const handleShareCase = (index: number) => {
   const result = copy(JSON.stringify(genNewTag(index)));
   if (result) {
-    Message({
-      type: 'success',
-      message: '已复制到剪贴板',
-    });
+    Message.success('已复制到剪贴板');
   } else {
-    Message({
-      type: 'error',
-      message: '复制失败',
-    });
+    Message.error('复制失败');
   }
 };
 
@@ -432,10 +421,7 @@ const handleUpdateNode = async (data: TreeData) => {
 const handleDeleteNode = async () => {
   currentNode.value?.remove();
   await handleSave();
-  Message({
-    type: 'success',
-    message: '删除成功',
-  });
+  Message.success('删除成功');
 };
 
 /**
@@ -449,7 +435,12 @@ const handleLog = (index: number) => {
   let result;
   try {
     result = parseResponse(mockItem.value.tags[index].data, mockItem.value);
-    Message.success('打印成功');
+    const copyResult = copy(JSON.stringify(result));
+    if (copyResult) {
+      Message.success('打印成功，已复制到剪贴板');
+    } else {
+      Message.error('复制失败');
+    }
   } catch ({ message, stack }) {
     result = { message, stack };
     Message.error('样例生成失败，请查看原因');
