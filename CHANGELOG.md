@@ -10,6 +10,11 @@ feat
 3. 原始json-json编辑页禁esc
 4. 原始json-树形编辑页支持改key值
 
+fix
+---
+
+1. axios@1.4.0重写responseHeader问题
+
 ## v1.0.2
 feat
 ---

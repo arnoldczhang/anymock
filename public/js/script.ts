@@ -148,6 +148,15 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
   try {
     const { data, config, originData } = mock;
     const { delay, delayMills } = config || {};
+    // fix: axios@1.4.0重写responseHeader问题
+    // 如果没有对responseHeader进行重写，则做兜底
+    const otherProps = (responseHeaderProxy || []).length
+      ? {}
+      : {
+          headers: {
+            'content-type': 'application/json; charset=UTF-8',
+          },
+        };
 
     const result = parseResponse(data, config, {
       request: body ? JSON.parse(body) : {},
@@ -160,6 +169,7 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
       text: JSON.stringify(result),
       status: CODE.SUCCESS,
       type: 'json',
+      ...otherProps,
     };
 
     logger.log(`拦截了：${url}`, result);
