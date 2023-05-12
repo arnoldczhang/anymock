@@ -5,7 +5,7 @@ import EVENT from '../../src/const/event';
 import type { MockItem } from '../../src/types/mock';
 import logger from '../../src/utils/log';
 import { page } from '../../src/utils/message';
-import { parseResponse } from '../../src/utils/mock';
+import { parseRequestBody, parseResponse } from '../../src/utils/mock';
 
 logger.log('mock脚本植入');
 
@@ -159,7 +159,7 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
         };
 
     const result = parseResponse(data, config, {
-      request: body ? JSON.parse(body) : {},
+      request: body ? parseRequestBody(body) : {},
       response: null,
       originData,
       url,

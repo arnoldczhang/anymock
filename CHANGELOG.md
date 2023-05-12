@@ -7,11 +7,14 @@ feat
 
 1. mock列表也可直接编辑接口名
 2. 新增必要提示
+3. 支持iframe内代理（脚本注入到all_frames）
+4. 录制到的请求支持搜索
 
 fix
 ---
 
-1. 尝试修复el-table布局混乱问题
+1. 修复el-table布局在tab切换时错乱问题
+2. 修复 request-body是form data时解析出错问题
 
 
 ## v1.0.3

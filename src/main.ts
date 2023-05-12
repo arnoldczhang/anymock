@@ -7,6 +7,7 @@ import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
 import useLogStore from '@/store/log';
+import useTableStore from '@/store/table';
 import type { Log, MessageType } from '@/types/mock.d';
 import { runtime, tab } from '@/utils/message';
 
@@ -25,6 +26,7 @@ import router from './router';
  */
 const initListener = () => {
   const logStore = useLogStore();
+  const tableStore = useTableStore();
   tab.send({ type: EVENT.record_state, data: '' });
   runtime.listen((message: MessageType) => {
     const { type, data } = message;
@@ -34,6 +36,9 @@ const initListener = () => {
         break;
       case EVENT.inactive:
         logStore.refresh();
+        break;
+      case EVENT.active:
+        tableStore.refresh();
         break;
     }
   });

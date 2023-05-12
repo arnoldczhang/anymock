@@ -1,6 +1,6 @@
 {
   "name": "AnyMock",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "manifest_version": 3,
   "description": "mock & management",
   "permissions": [
@@ -32,6 +32,7 @@
       "js": [
         "js/content.js"
       ],
+      "all_frames": true,
       "run_at": "document_start"
     }
   ],

@@ -319,6 +319,30 @@ export const parseResponse = (
 };
 
 /**
+ * 解析请求头的body
+ *
+ * - 可能是 jsonstring
+ * - 可能是 URLSearchParams
+ * - 可能是？？别的再说
+ *
+ * @param body
+ */
+export const parseRequestBody = (body: string) => {
+  let result: Record<string, any> = {};
+  try {
+    result = JSON.parse(body);
+  } catch (err) {
+    try {
+      const searchParams = new URLSearchParams(body) as Record<string, any>;
+      result = Object.fromEntries(searchParams.entries());
+    } catch (err) {
+      return result;
+    }
+  }
+  return result;
+};
+
+/**
  * 将json转为el-tree需要结构
  *
  * - 如果是数组，label取数字类型index

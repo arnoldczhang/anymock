@@ -15,6 +15,8 @@ const messageSet = new Set();
 // 录制工具是否接收请求录制
 let recording = getState();
 
+const inIframe = () => self !== top;
+
 /**
  * 通用提示
  * @param {*} message
@@ -22,6 +24,7 @@ let recording = getState();
  * @returns
  */
 const notify = (message = '', option = {}) => {
+  if (inIframe()) return;
   const { once = false, duration } = option as {
     once?: boolean;
     duration?: number;
@@ -159,6 +162,8 @@ const initListener = () => {
         updateState(data);
         break;
       case EVENT.log:
+        // iframe里不重复log
+        if (inIframe()) break;
         logger.log('样例：', data);
         break;
       default:

@@ -4,34 +4,42 @@
       <el-empty v-if="!list.length" class="container__body--empty" />
       <template v-else>
         <section class="container__body--left">
-          <section
-            v-for="(item, index) in list"
-            class="url__item"
-            :class="{ selected: item.id === currentMock.id }"
-            :key="item.url + index"
-          >
-            <span class="url__item--left">
-              <TextOverflow :content="item.url" @click="handleView(item)" />
-            </span>
-            <span class="url__item--right">
-              <el-link v-if="item.used" class="mr8" type="info" disabled>
-                已添加
-              </el-link>
-              <el-link
-                v-else
-                class="mr8"
-                type="success"
-                :underline="false"
-                @click="handleAddMock(item)"
-              >
-                +添加mock
-              </el-link>
-            </span>
-          </section>
+          <el-input
+            v-model="search"
+            class="search__input"
+            :prefix-icon="Search"
+          />
+          <dl v-if="searchList.length" class="url__list">
+            <dd
+              v-for="(item, index) in searchList"
+              class="url__item"
+              :class="{ selected: item.id === currentMock.id }"
+              :key="item.url + index"
+            >
+              <span class="url__item--left">
+                <TextOverflow :content="item.url" @click="handleView(item)" />
+              </span>
+              <span class="url__item--right">
+                <el-link v-if="item.used" class="mr8" type="info" disabled>
+                  已添加
+                </el-link>
+                <el-link
+                  v-else
+                  class="mr8"
+                  type="success"
+                  :underline="false"
+                  @click="handleAddMock(item)"
+                >
+                  +添加mock
+                </el-link>
+              </span>
+            </dd>
+          </dl>
+          <el-empty v-else />
         </section>
         <section class="container__body--right">
           <el-input class="editor__name" v-model="currentMock.url">
-            <template #prepend>接口名</template>
+            <template #prepend>接口</template>
           </el-input>
           <JsonEditor
             v-model="currentMock.response"
@@ -64,7 +72,7 @@
   </article>
 </template>
 <script setup lang="ts">
-import { VideoPause, VideoPlay } from '@element-plus/icons-vue';
+import { Search, VideoPause, VideoPlay } from '@element-plus/icons-vue';
 import { ElMessage as Message } from 'element-plus';
 
 import EVENT from '@/const/event';
@@ -79,8 +87,12 @@ import { reloadCurrentTab, tab } from '@/utils/message';
 const store = useLogStore();
 const { logs, state } = storeToRefs(store);
 const recording = ref(false);
+const search = ref('');
 const groupId = ref('');
 const list = computed(() => logs.value);
+const searchList = computed(() =>
+  list.value.filter(({ url }) => !search.value || url.includes(search.value))
+);
 /**
  * 需新增的mock信息
  */
@@ -174,33 +186,41 @@ useTabActiveListener(init);
     }
     &--left {
       width: calc(~'60% - 8px');
-      overflow-y: auto;
-      .url__item {
+      .search__input {
+        width: 98%;
         box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        line-height: 32px;
-        height: 32px;
-        padding: 0 8px;
-        width: 100%;
-        overflow: hidden;
-        &--left {
-          width: 80%;
-        }
-        &--right {
+        margin: 8px;
+      }
+      .url__list {
+        height: calc(~'100% - 48px');
+        overflow-y: auto;
+        .url__item {
           box-sizing: border-box;
-          width: 20%;
           display: flex;
-          justify-content: end;
-        }
-        &.selected,
-        &:hover {
-          background-color: #f4f4f5;
-        }
-        .link--copy {
-          font-size: 12px;
-          flex-shrink: 0;
+          align-items: center;
+          justify-content: space-between;
+          line-height: 32px;
+          height: 32px;
+          padding: 0 8px;
+          width: 100%;
+          overflow: hidden;
+          &--left {
+            width: 80%;
+          }
+          &--right {
+            box-sizing: border-box;
+            width: 20%;
+            display: flex;
+            justify-content: end;
+          }
+          &.selected,
+          &:hover {
+            background-color: #f4f4f5;
+          }
+          .link--copy {
+            font-size: 12px;
+            flex-shrink: 0;
+          }
         }
       }
     }

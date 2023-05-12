@@ -9,7 +9,11 @@ chrome.devtools.panels.create(
     panel.onHidden.addListener(() => {
       tab.send({ type: EVENT.record_state, data: '' });
       runtime.send({ type: EVENT.inactive });
-      console.log('面板隐藏了');
+      console.log('Mock面板隐藏了');
+    });
+    panel.onShown.addListener(() => {
+      runtime.send({ type: EVENT.active });
+      console.log('Mock面板显示了');
     });
     console.log('自定义面板创建成功！'); // 注意这个log一般看不到
   }

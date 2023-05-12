@@ -77,6 +77,7 @@ import { Search } from '@element-plus/icons-vue';
 import { ElTable } from 'element-plus';
 
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import useTableStore from '@/store/table';
 import type { MockItem } from '@/types/mock';
 
 import { useTableData } from './useTableData';
@@ -90,6 +91,7 @@ const props = withDefaults(
   }
 );
 
+const { state } = storeToRefs(useTableStore());
 const table = ref<InstanceType<typeof ElTable>>();
 const router = useRouter();
 const tableProps = computed(
@@ -121,6 +123,14 @@ useTabActiveListener(() => {
   getTableData();
   table.value?.doLayout();
 });
+
+/**
+ * 修复切换Mock tab时，table布局错乱问题
+ */
+watch(
+  () => state.value,
+  () => table.value?.doLayout()
+);
 
 defineExpose({
   handleDeleteAllMock,

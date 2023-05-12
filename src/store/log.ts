@@ -6,7 +6,9 @@ import type { LogState } from '@/types/store.d';
 
 export default defineStore('log', {
   state: (): LogState => ({
-    logs: [],
+    logs: [
+      // { id: '1', url: 'aaa', response: '{}' },
+    ],
     // 仅用于重置recorder状态
     state: 0,
   }),
