@@ -28,7 +28,7 @@
               v-model="mockItem.onlyProxy"
               @change="handleSave"
             >
-              透传原始json
+              透传模式
             </el-checkbox>
           </el-tooltip>
           <el-switch
@@ -441,7 +441,7 @@ const handleLog = (index: number) => {
     } else {
       Message.error('复制失败');
     }
-  } catch ({ message, stack }) {
+  } catch ({ message, stack }: any) {
     result = { message, stack };
     Message.error('样例生成失败，请查看原因');
   } finally {

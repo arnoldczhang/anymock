@@ -81,12 +81,14 @@
       </section>
       <footer class="container__footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-tooltip content="之前定义的mock规则会被覆盖掉">
+        <el-tooltip content="注意：会覆盖已定义的mock规则">
           <el-button type="success" @click="handleSaveAndReplace">
             保存&替换mock
           </el-button>
         </el-tooltip>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-tooltip content="透传模式下，保存的内容才会生效">
+          <el-button type="primary" @click="handleSave">保存</el-button>
+        </el-tooltip>
       </footer>
     </article>
   </el-drawer>

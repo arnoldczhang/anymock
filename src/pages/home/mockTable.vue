@@ -1,6 +1,6 @@
 <template>
   <article class="table">
-    <el-table :data="searchTableData" v-bind="tableProps">
+    <el-table ref="table" :data="searchTableData" v-bind="tableProps">
       <el-table-column
         prop="name"
         label="接口"
@@ -11,13 +11,21 @@
           <header class="header--name">
             <span>接口</span>
             <el-input
+              v-model="search"
               class="header--name__input"
               placeholder="可搜索接口名"
               :prefix-icon="Search"
               size="small"
-              v-model="search"
             />
           </header>
+        </template>
+        <template #default="{ row }">
+          <input
+            v-model="row.name"
+            class="input--simple column--name"
+            spellcheck="false"
+            @blur="handleSave"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="delay" label="请求延时" width="420">
@@ -66,6 +74,7 @@
 </template>
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
+import { ElTable } from 'element-plus';
 
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 import type { MockItem } from '@/types/mock';
@@ -81,6 +90,7 @@ const props = withDefaults(
   }
 );
 
+const table = ref<InstanceType<typeof ElTable>>();
 const router = useRouter();
 const tableProps = computed(
   () =>
@@ -107,7 +117,10 @@ const handleGoDetail = (data: MockItem) => {
   router.push({ name: 'detail', params: { id } });
 };
 
-useTabActiveListener(getTableData);
+useTabActiveListener(() => {
+  getTableData();
+  table.value?.doLayout();
+});
 
 defineExpose({
   handleDeleteAllMock,
@@ -120,6 +133,10 @@ defineExpose({
   :deep(.table__header) {
     height: 48px;
   }
+}
+.column--name {
+  width: 300px;
+  color: var(--el-text-color-primary);
 }
 .header--name {
   display: flex;
