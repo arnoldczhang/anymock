@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { ReqHeaderItem } from '@/types/mock';
+
 import { api } from '@/service';
+import { ReqHeaderItem } from '@/types/mock';
 
 const hasSelected = (header: ReqHeaderItem) => header.selected;
 
@@ -8,6 +9,7 @@ export default defineStore('common', {
   state: () => ({
     reqHeader: [],
     resHeader: [],
+    globalError: '',
   }),
   getters: {
     hasReqHeaderProxy: (state) => state.reqHeader.some(hasSelected),
@@ -19,6 +21,12 @@ export default defineStore('common', {
     },
     async updateResHeader() {
       this.resHeader = await api.resHeader.getList();
+    },
+    clearGlobalError() {
+      this.globalError = '';
+    },
+    updateGlobalError(error: string) {
+      this.globalError = error;
     },
   },
 });

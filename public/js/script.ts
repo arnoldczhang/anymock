@@ -1,11 +1,13 @@
 import xhook from 'xhook';
-import type { MockItem } from '../../src/types/mock';
-import { parseResponse } from '../../src/utils/mock';
+
 import CODE from '../../src/const/code';
 import EVENT from '../../src/const/event';
+import type { MockItem } from '../../src/types/mock';
+import logger from '../../src/utils/log';
 import { page } from '../../src/utils/message';
+import { parseRequestBody, parseResponse } from '../../src/utils/mock';
 
-console.log('mock脚本植入');
+logger.log('mock脚本植入');
 
 // storage获取前请求暂存处
 const requestQueue: [Record<string, any>, Function, number][] = [];
@@ -146,9 +148,18 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
   try {
     const { data, config, originData } = mock;
     const { delay, delayMills } = config || {};
+    // fix: axios@1.4.0重写responseHeader问题
+    // 如果没有对responseHeader进行重写，则做兜底
+    const otherProps = (responseHeaderProxy || []).length
+      ? {}
+      : {
+          headers: {
+            'content-type': 'application/json; charset=UTF-8',
+          },
+        };
 
     const result = parseResponse(data, config, {
-      request: body ? JSON.parse(body) : {},
+      request: body ? parseRequestBody(body) : {},
       response: null,
       originData,
       url,
@@ -158,9 +169,10 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
       text: JSON.stringify(result),
       status: CODE.SUCCESS,
       type: 'json',
+      ...otherProps,
     };
 
-    console.log(`拦截了：${url}`, result);
+    logger.log(`拦截了：${url}`, result);
 
     if (delay && typeof delayMills === 'number') {
       // 精确计算延时
@@ -169,7 +181,7 @@ const proxyResponse = (request, callback, startTime = Date.now()) => {
     }
     return callback(response);
   } catch (err) {
-    console.log('mock失败', err);
+    logger.log('mock失败', err);
     return callback();
   }
 };

@@ -1,18 +1,31 @@
 <template>
   <article class="table">
-    <el-table :data="searchTableData" v-bind="tableProps">
-      <el-table-column prop="name" label="接口" show-overflow-tooltip>
+    <el-table ref="table" :data="searchTableData" v-bind="tableProps">
+      <el-table-column
+        prop="name"
+        label="接口"
+        width="320"
+        show-overflow-tooltip
+      >
         <template #header>
           <header class="header--name">
             <span>接口</span>
             <el-input
+              v-model="search"
               class="header--name__input"
               placeholder="可搜索接口名"
               :prefix-icon="Search"
               size="small"
-              v-model="search"
             />
           </header>
+        </template>
+        <template #default="{ row }">
+          <input
+            v-model="row.name"
+            class="input--simple column--name"
+            spellcheck="false"
+            @blur="handleSave"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="delay" label="请求延时" width="420">
@@ -61,8 +74,13 @@
 </template>
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
-import type { MockItem } from '@/types/mock';
+import { ElTable } from 'element-plus';
+
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import useTableStore from '@/store/table';
+import type { MockItem } from '@/types/mock';
+import { scrollTo } from '@/utils/dom';
+
 import { useTableData } from './useTableData';
 
 const props = withDefaults(
@@ -74,6 +92,8 @@ const props = withDefaults(
   }
 );
 
+const { state } = storeToRefs(useTableStore());
+const table = ref<InstanceType<typeof ElTable>>();
 const router = useRouter();
 const tableProps = computed(
   () =>
@@ -88,19 +108,41 @@ const {
   search,
   getTableData,
   searchTableData,
-  handleAddMock,
+  handleAddMock: handleAdd,
   handleStateChange,
   handleDeleteMock,
   handleDeleteAllMock,
   handleSave,
 } = useTableData(computed(() => props.groupId));
 
+const handleAddMock = () => {
+  handleAdd();
+  // 自动滚到新增位置
+  nextTick(() => {
+    const rows = table.value?.$el.querySelectorAll('.el-table__row') || [];
+    if (rows.length) {
+      scrollTo(rows[rows.length - 1]);
+    }
+  });
+};
+
 const handleGoDetail = (data: MockItem) => {
   const { id } = data;
   router.push({ name: 'detail', params: { id } });
 };
 
-useTabActiveListener(getTableData);
+useTabActiveListener(() => {
+  getTableData();
+  table.value?.doLayout();
+});
+
+/**
+ * 修复切换Mock tab时，table布局错乱问题
+ */
+watch(
+  () => state.value,
+  () => table.value?.doLayout()
+);
 
 defineExpose({
   handleDeleteAllMock,
@@ -113,6 +155,10 @@ defineExpose({
   :deep(.table__header) {
     height: 48px;
   }
+}
+.column--name {
+  width: 300px;
+  color: var(--el-text-color-primary);
 }
 .header--name {
   display: flex;

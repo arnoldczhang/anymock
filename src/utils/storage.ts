@@ -1,3 +1,5 @@
+import useCommonStore from '@/store/common';
+
 import { target } from './env';
 
 const useStorage =
@@ -60,7 +62,12 @@ export const setStorage = async (key: string, val: any) => {
   await checkStorage();
   if (useStorage) {
     storageData[key] = val;
-    target.chrome.storage.local.set({ [key]: val });
+    try {
+      target.chrome.storage.local.set({ [key]: val });
+    } catch (err: any) {
+      const store = useCommonStore();
+      store.updateGlobalError(err.message);
+    }
   } else {
     try {
       localStorage.setItem(key, JSON.stringify(val));

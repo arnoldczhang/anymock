@@ -1,3 +1,5 @@
+import logger from '@/utils/log';
+
 import type { MessageType } from '../types/mock.d';
 
 let tabId: number;
@@ -18,7 +20,7 @@ export const sendTabMessage = async (
   callback?: Function
 ) => {
   if (!chrome?.tabs) {
-    return console.log(message);
+    return logger.log(message);
   }
 
   // console.log('发送消息到content-script');
@@ -125,7 +127,7 @@ export const listenTabActivated = (callback: Function) => {
     listener = () => {
       if (!document.hidden) {
         if (callback) callback();
-        console.log(`tab：${tabId} 激活`);
+        logger.log(`tab：${tabId} 激活`);
       }
     };
     document.addEventListener('visibilitychange', listener);
@@ -135,7 +137,7 @@ export const listenTabActivated = (callback: Function) => {
       if (win.tabId) {
         if (win.tabId === tabId) {
           if (callback) callback();
-          console.log(`tab：${tabId} 激活`);
+          logger.log(`tab：${tabId} 激活`);
         }
         // window窗口切换
       } else {

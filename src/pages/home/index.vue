@@ -46,21 +46,21 @@
       <span class="container__header--right">
         <el-button
           class="btn"
-          type="danger"
-          size="small"
-          :tabindex="-1"
-          @click="mockTableRef?.handleDeleteAllMock?.()"
-        >
-          清空mock
-        </el-button>
-        <el-button
-          class="btn mr8"
           type="primary"
           size="small"
           :tabindex="-1"
           @click="mockTableRef?.handleAddMock?.()"
         >
           +新增mock
+        </el-button>
+        <el-button
+          class="btn"
+          type="danger"
+          size="small"
+          :tabindex="-1"
+          @click="mockTableRef?.handleDeleteAllMock?.()"
+        >
+          清空mock
         </el-button>
       </span>
     </header>
@@ -79,9 +79,10 @@
   />
 </template>
 <script lang="ts" setup>
-import MockTable from './mockTable.vue';
 import EditInputValueDialog from '@/components/edit-input-value-dialog.vue';
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+
+import MockTable from './mockTable.vue';
 import { useMockGroup } from './useMockGroup';
 
 const {

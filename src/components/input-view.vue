@@ -1,7 +1,7 @@
 <template>
   <section class="input__container">
     <span v-if="!editing" class="container--readonly">
-      <TextOverflow :content="props.text" />
+      <TextOverflow :content="props.text || props.model" />
       <c-icon
         class="ml8"
         icon="Edit"

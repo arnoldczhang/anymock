@@ -28,7 +28,7 @@
               v-model="mockItem.onlyProxy"
               @change="handleSave"
             >
-              透传原始json
+              透传模式
             </el-checkbox>
           </el-tooltip>
           <el-switch
@@ -58,7 +58,9 @@
               @confirm="(val: string) => handleUpdateTagName(tag, val)"
             />
             <span class="card__title--right">
-              <!-- <el-link :underline="false" @click="handleLog(index)">样例log</el-link> -->
+              <el-button link size="small" @click="handleLog(index)">
+                打印样例&复制
+              </el-button>
               <el-button
                 class="ml8"
                 size="small"
@@ -83,6 +85,7 @@
               <el-button
                 class="ml8"
                 size="small"
+                type="success"
                 @click="handleCopyCase(index)"
               >
                 拷贝案例
@@ -183,32 +186,36 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ElTree as Tree, ElMessage as Message } from 'element-plus';
+import { ElMessage as Message, ElTree as Tree } from 'element-plus';
 import type Node from 'element-plus/lib/components/tree/src/model/node.d';
-import { v4 as uuid } from 'uuid';
 import cloneDeep from 'lodash/cloneDeep';
+import { v4 as uuid } from 'uuid';
+
+import { STATUS } from '@/const';
+import EVENT from '@/const/event';
+import { useTabActiveListener } from '@/hooks/useTabActiveListener';
+import { Json, MockItem, Tag, TreeData } from '@/types/mock.d';
 import {
-  isObj,
-  transfromJson2TreeData,
+  copy,
   genCaseName,
   genCaseNameCn,
   genTreeData,
+  isObj,
+  transfromJson2TreeData,
   validateTag,
-  copy,
 } from '@/utils/index';
+import { tab } from '@/utils/message';
 import {
-  parseResponse,
+  getLengthMockText,
   getMockText,
   parseOriginData,
-  getLengthMockText,
+  parseResponse,
 } from '@/utils/mock';
-import { MockItem, Tag, TreeData, Json } from '@/types/mock.d';
-import { STATUS } from '@/const';
-import ImportDialog from './components/import-dialog.vue';
+
 import AddDialog from './components/add-dialog.vue';
+import ImportDialog from './components/import-dialog.vue';
 import TreeEditDrawer from './components/tree-edit-drawer.vue';
 import { useMockItemData } from './useMockItemData';
-import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 
 const route = useRoute();
 const router = useRouter();
@@ -277,10 +284,7 @@ const handleTransformJson = async (jsonStr: string) => {
     currentTag.value.data = treeData;
     await handleSave();
   } catch (err) {
-    Message({
-      type: 'error',
-      message: 'JSON.parse失败，请检查输入',
-    });
+    Message.error('JSON.parse失败，请检查输入');
   }
 };
 
@@ -296,10 +300,7 @@ const handleImportCase = async (jsonStr: string) => {
     mockItem.value.tags.push(tag);
     await handleSave();
   } catch (err: any) {
-    Message({
-      type: 'error',
-      message: `复制失败，原因：${err.message}`,
-    });
+    Message.error(`复制失败，原因：${err.message}`);
   }
 };
 
@@ -333,15 +334,9 @@ const genNewTag = (index: number) => {
 const handleShareCase = (index: number) => {
   const result = copy(JSON.stringify(genNewTag(index)));
   if (result) {
-    Message({
-      type: 'success',
-      message: '已复制到剪贴板',
-    });
+    Message.success('已复制到剪贴板');
   } else {
-    Message({
-      type: 'error',
-      message: '复制失败',
-    });
+    Message.error('复制失败');
   }
 };
 
@@ -426,10 +421,7 @@ const handleUpdateNode = async (data: TreeData) => {
 const handleDeleteNode = async () => {
   currentNode.value?.remove();
   await handleSave();
-  Message({
-    type: 'success',
-    message: '删除成功',
-  });
+  Message.success('删除成功');
 };
 
 /**
@@ -440,7 +432,21 @@ const handleDeleteNode = async () => {
  * @param index
  */
 const handleLog = (index: number) => {
-  console.log(parseResponse(mockItem.value.tags[index].data, mockItem.value));
+  let result;
+  try {
+    result = parseResponse(mockItem.value.tags[index].data, mockItem.value);
+    const copyResult = copy(JSON.stringify(result));
+    if (copyResult) {
+      Message.success('打印成功，已复制到剪贴板');
+    } else {
+      Message.error('复制失败');
+    }
+  } catch ({ message, stack }: any) {
+    result = { message, stack };
+    Message.error('样例生成失败，请查看原因');
+  } finally {
+    tab.send({ type: EVENT.log, data: result });
+  }
 };
 
 /**

@@ -1,6 +1,7 @@
 // 当期接口分组相关模拟请求
 import { CURRENT_GROUP_ID_KEY } from '@/const/storageKey';
 import { getStorage, setStorage } from '@/utils/storage';
+
 import { api } from '.';
 
 // 从storage获取当期分组id

@@ -10,9 +10,9 @@
   />
 </template>
 <script setup lang="ts">
-import { Codemirror } from 'vue-codemirror';
-import { EditorView } from '@codemirror/view';
 import { json as jsonPlugin } from '@codemirror/lang-json';
+import { EditorView } from '@codemirror/view';
+import { Codemirror } from 'vue-codemirror';
 
 type Props = {
   modelValue: string;

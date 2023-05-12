@@ -5,14 +5,17 @@ import {
   REQ_HEADER_KEY,
   RES_HEADER_KEY,
 } from '../../src/const/storageKey';
-import { runtime, page } from '../../src/utils/message';
-import { updateState, getState } from '../../src/service/recorder';
+import { getState, updateState } from '../../src/service/recorder';
+import logger from '../../src/utils/log';
+import { page, runtime } from '../../src/utils/message';
 
 // 记录正在提示的信息
 const messageSet = new Set();
 
 // 录制工具是否接收请求录制
 let recording = getState();
+
+const inIframe = () => self !== top;
 
 /**
  * 通用提示
@@ -21,6 +24,7 @@ let recording = getState();
  * @returns
  */
 const notify = (message = '', option = {}) => {
+  if (inIframe()) return;
   const { once = false, duration } = option as {
     once?: boolean;
     duration?: number;
@@ -156,6 +160,11 @@ const initListener = () => {
       case EVENT.record_state:
         recording = data;
         updateState(data);
+        break;
+      case EVENT.log:
+        // iframe里不重复log
+        if (inIframe()) break;
+        logger.log('样例：', data);
         break;
       default:
         break;
