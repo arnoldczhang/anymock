@@ -79,6 +79,7 @@ import { ElTable } from 'element-plus';
 import { useTabActiveListener } from '@/hooks/useTabActiveListener';
 import useTableStore from '@/store/table';
 import type { MockItem } from '@/types/mock';
+import { scrollTo } from '@/utils/dom';
 
 import { useTableData } from './useTableData';
 
@@ -107,12 +108,23 @@ const {
   search,
   getTableData,
   searchTableData,
-  handleAddMock,
+  handleAddMock: handleAdd,
   handleStateChange,
   handleDeleteMock,
   handleDeleteAllMock,
   handleSave,
 } = useTableData(computed(() => props.groupId));
+
+const handleAddMock = () => {
+  handleAdd();
+  // 自动滚到新增位置
+  nextTick(() => {
+    const rows = table.value?.$el.querySelectorAll('.el-table__row') || [];
+    if (rows.length) {
+      scrollTo(rows[rows.length - 1]);
+    }
+  });
+};
 
 const handleGoDetail = (data: MockItem) => {
   const { id } = data;

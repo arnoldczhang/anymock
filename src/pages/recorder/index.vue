@@ -35,7 +35,7 @@
               </span>
             </dd>
           </dl>
-          <el-empty v-else />
+          <el-empty v-else class="url__list--empty" />
         </section>
         <section class="container__body--right">
           <el-input class="editor__name" v-model="currentMock.url">
@@ -194,6 +194,9 @@ useTabActiveListener(init);
       .url__list {
         height: calc(~'100% - 48px');
         overflow-y: auto;
+        &--empty {
+          height: calc(~'100% - 48px');
+        }
         .url__item {
           box-sizing: border-box;
           display: flex;

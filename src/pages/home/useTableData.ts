@@ -1,9 +1,10 @@
-import { MockItem, Tag } from '@/types/mock';
 import { ElMessage as Message, ElMessageBox as MessageBox } from 'element-plus';
 import { ComputedRef } from 'vue';
-import { api } from '@/service';
-import { genMockInterface, transfromJson2TreeData, genTag } from '@/utils';
+
 import { STATUS } from '@/const';
+import { api } from '@/service';
+import { MockItem, Tag } from '@/types/mock';
+import { genMockInterface, genTag, transfromJson2TreeData } from '@/utils';
 
 export const useTableData = (groupId: ComputedRef<string>) => {
   // 当前使用的接口列表
