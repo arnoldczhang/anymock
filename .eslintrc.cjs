@@ -8,6 +8,7 @@ module.exports = {
   globals: {
     chrome: 'readonly',
     defineProps: 'readonly',
+    defineOptions: 'readonly',
     defineEmits: 'readonly',
     defineExpose: 'readonly',
     withDefaults: 'readonly',
