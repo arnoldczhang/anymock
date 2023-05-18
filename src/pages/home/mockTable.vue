@@ -83,6 +83,8 @@ import { scrollTo } from '@/utils/dom';
 
 import { useTableData } from './useTableData';
 
+defineOptions({ name: 'mockTable' });
+
 const props = withDefaults(
   defineProps<{
     groupId: string;
