@@ -1,6 +1,6 @@
 {
   "name": "AnyMock",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "manifest_version": 3,
   "description": "mock & management",
   "permissions": [

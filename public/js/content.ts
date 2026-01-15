@@ -124,7 +124,7 @@ const freshData = () => {
         });
 
         if (!inBlacklist) {
-          notify('mock插件已开启', { once: true, duration: 1000 });
+          // notify('mock插件已开启', { once: true, duration: 1000 });
         }
       }
     );

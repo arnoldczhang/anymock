@@ -231,6 +231,7 @@ useTabActiveListener(init);
         display: flex;
         justify-self: center;
         flex-direction: column;
+        width: 100%;
         &--empty {
           height: 100%;
         }

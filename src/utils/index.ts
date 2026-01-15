@@ -147,6 +147,7 @@ export const genMockInterface = (groupId = '', name = ''): MockItem => {
     nameCn: name || `列表_${random}`,
     status: STATUS.enable,
     delay: false,
+    matchFunc: null,
     tags: [genTag()],
   };
 };

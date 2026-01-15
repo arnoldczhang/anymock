@@ -40,12 +40,23 @@ const isReady = () =>
  * @param xhr
  * @returns
  */
-const isMocked = (xhr: { url: string }) => {
-  const { url = '' } = xhr;
+const isMocked = (xhr: { url: string, body?: Record<string, any> }) => {
+  const { url = '', body } = xhr;
   const matched = (interceptor || []).find(
     ({ name }) => (url || '').indexOf(name) > -1
   );
   if (!matched) return false;
+  if (matched.matchFunc && typeof matched.matchFunc === 'string') {
+    const fn = new Function('body', `
+      try {
+        body = JSON.parse(body);
+        return ${matched.matchFunc};
+      } catch(e) {
+        return false;
+      }
+    `);
+    if (!fn(body)) return false;
+  }
   const matchedTag = matched.tags.find(({ status }) => status);
   if (!matchedTag) return false;
   return {
@@ -143,7 +154,7 @@ const proxyResponseHeader = (response) => {
  */
 const proxyResponse = (request, callback, startTime = Date.now()) => {
   const { url, body } = request;
-  const mock = isMocked({ url });
+  const mock = isMocked({ url, body });
   if (!mock) return callback();
   try {
     const { data, config, originData } = mock;
@@ -243,10 +254,10 @@ const initXhook = () => {
 
   xhook.after((request, response) => {
     proxyResponseHeader(response);
-    const { url } = request;
+    const { url, body } = request;
     // 已经mock的接口，且非在黑名单内就不录进去了
     // 黑名单场景其实希望都录进去
-    if (isMocked({ url }) && !inBlacklist) return;
+    if (isMocked({ url, body }) && !inBlacklist) return;
     recordResponse(request, response);
   });
 };

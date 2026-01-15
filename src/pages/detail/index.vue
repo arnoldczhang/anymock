@@ -12,6 +12,8 @@
       </template>
       <template #extra>
         <span class="card__title--right flex-center">
+          <el-input v-model="mockItem.matchFunc" placeholder="动态匹配方法" @change="handleUpdateMockFunc"/>
+          <el-divider direction="vertical" />
           <el-button
             type="success"
             size="small"
@@ -108,7 +110,11 @@
           </header>
         </template>
         <section>
-          <el-tree ref="treeRef" :data="tag.data" node-key="id">
+          <el-tree
+            ref="treeRef"
+            :data="tag.data"
+            node-key="id"
+          >
             <template #default="{ node, data }">
               <section class="tree__node">
                 <span class="tree__node--left">
@@ -248,6 +254,11 @@ const handleStatusChange = async (status: string | number | boolean) => {
   if (status) {
     mockItem.value.tags[0].status = STATUS.enable;
   }
+  await handleSave();
+};
+
+const handleUpdateMockFunc = async (val: string) => {
+  mockItem.value.matchFunc = val;
   await handleSave();
 };
 

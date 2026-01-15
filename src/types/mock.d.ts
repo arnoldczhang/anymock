@@ -1,3 +1,5 @@
+import { st } from "vue-router/dist/router-CWoNjPRp.d.mts";
+
 export type Type = 'object'
   |'array'
   |'null'
@@ -75,6 +77,8 @@ export interface MockItem {
   tags: Tag[];
   // 纯透传原始json
   onlyProxy?: boolean;
+  // 匹配函数
+  matchFunc?: string | null;
 }
 
 /**
