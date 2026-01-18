@@ -15,7 +15,11 @@ pnpm start
 pnpm build
 ```
 
-## 使用
+## 本地使用
 打包产物在`dist`目录下
 
 打开chrome -> 访问 chrome://extensions/ -> 载入未封装项目 -> 选择dist目录 -> 完成
+
+## 发布正式版
+1. zip -r anymock.zip dist/
+2. https://chrome.google.com/webstore/devconsole/
